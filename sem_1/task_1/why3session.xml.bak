@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Z3" version="4.8.12" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="3" name="CVC4" version="1.7" alternative="noBV" timelimit="5" steplimit="0" memlimit="1000"/>
+<file name="../task_1.why" expanded="true">
+<theory name="SemTask1" sum="4caee99a591104f7e101ad797e363450" expanded="true">
+ <goal name="correct_u" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.01" steps="16"/></proof>
+ </goal>
+ <goal name="a_a_u" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.00" steps="10"/></proof>
+ </goal>
+ <goal name="first_div_cor" expl="" expanded="true">
+ <proof prover="2"><result status="valid" time="0.01" steps="31"/></proof>
+ </goal>
+ <goal name="second_div_cor" expl="" expanded="true">
+ <proof prover="0"><result status="valid" time="0.07" steps="4950"/></proof>
+ <proof prover="2"><result status="highfailure" time="0.01"/></proof>
+ </goal>
+ <goal name="l11" expl="" expanded="true">
+ <proof prover="0" timelimit="1" memlimit="2000"><result status="unknown" time="0.05" steps="9292"/></proof>
+ <proof prover="2"><result status="timeout" time="5.00"/></proof>
+ </goal>
+ <goal name="l12" expl="" expanded="true">
+ <proof prover="0"><result status="valid" time="0.04" steps="3215"/></proof>
+ <proof prover="2"><result status="valid" time="0.01" steps="18"/></proof>
+ </goal>
+ <goal name="l1" expl="" expanded="true">
+ <proof prover="0"><result status="unknown" time="0.08" steps="24301"/></proof>
+ <proof prover="1"><result status="timeout" time="5.00"/></proof>
+ <proof prover="2"><result status="valid" time="0.03" steps="138"/></proof>
+ </goal>
+ <goal name="l2" expl="" expanded="true">
+ <proof prover="2" obsolete="true"><result status="valid" time="0.01" steps="41"/></proof>
+ </goal>
+ <goal name="l3" expl="" expanded="true">
+ <proof prover="0" obsolete="true"><result status="unknown" time="4.94" steps="50072"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ </goal>
+ <goal name="s_a" expl="" expanded="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="2" edited="task_1-SemTask1-s_a_1.ae" obsolete="true"><undone/></proof>
+ <proof prover="3" obsolete="true"><result status="unknown" time="0.17"/></proof>
+ </goal>
+ <goal name="a_a" expl="" expanded="true">
+ <proof prover="0" obsolete="true"><result status="unknown" time="5.24" steps="60650"/></proof>
+ <proof prover="1" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="2" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ </goal>
+ <goal name="start_div_cor" expl="" expanded="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.03" steps="377"/></proof>
+ <proof prover="2" obsolete="true"><result status="valid" time="0.00" steps="4"/></proof>
+ </goal>
+ <goal name="a_h" expl="" expanded="true">
+ <proof prover="0" obsolete="true"><result status="valid" time="0.04" steps="6097"/></proof>
+ <proof prover="2" obsolete="true"><result status="valid" time="0.00" steps="16"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

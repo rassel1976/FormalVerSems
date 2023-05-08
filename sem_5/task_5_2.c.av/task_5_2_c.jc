@@ -1,0 +1,143 @@
+
+axiomatic Padding {
+
+  logic type padding
+  
+}
+
+axiomatic Memory_reinterpretation_predicates {
+
+  predicate uint8_as_uint32(uint32 d0, uint8 a0, uint8 a1, uint8 a2, uint8 a3) =
+  ((d0 == ((((((a3 * 256) + a2) * 256) + a1) * 256) + a0)) &&
+    \uint8_as_uint32(d0, a0, a1, a2, a3))
+   
+  logic uint32 complement_to_uint32(int32 v) =
+  (if (v >= 0) then (v :> uint32) else (((v :> integer) + 4294967296) :> uint32))
+   
+  predicate uint8_as_int32(int32 d0, uint8 a3, uint8 a2, uint8 a1, uint8 a0) =
+  (uint8_as_uint32(complement_to_uint32(d0), a3, a2, a1, a0) &&
+    \uint8_as_int32(d0, a3, a2, a1, a0))
+   
+  predicate uint32_as_uint8(uint32 d0, uint8 a0, uint8 a1, uint8 a2, uint8 a3) =
+  (((a0 == (d0 % 256)) &&
+     (let d1 = (d0 / 256)
+     in ((a1 == (d1 % 256)) &&
+          (let d2 = (d1 / 256)
+          in ((a2 == (d2 % 256)) && (let d3 = (d2 / 256) in (a3 == d3))))))) &&
+    \uint32_as_uint8(d0, a0, a1, a2, a3))
+   
+  predicate int32_as_uint8(int32 d0, uint8 a3, uint8 a2, uint8 a1, uint8 a0) =
+  (uint32_as_uint8(complement_to_uint32(d0), a3, a2, a1, a0) &&
+    \int32_as_uint8(d0, a3, a2, a1, a0))
+   
+  logic uint8 complement_to_uint8(int8 v) =
+  (if (v >= 0) then (v :> uint8) else (((v :> integer) + 256) :> uint8))
+   
+  predicate int8_as_int32(int32 d0, int8 a3, int8 a2, int8 a1, int8 a0) =
+  (uint8_as_int32(d0, complement_to_uint8(a3), complement_to_uint8(a2),
+                  complement_to_uint8(a1), complement_to_uint8(a0)) &&
+    \int8_as_int32(d0, a3, a2, a1, a0))
+   
+  predicate int32_as_int8(int32 d0, int8 a3, int8 a2, int8 a1, int8 a0) =
+  (int32_as_uint8(d0, complement_to_uint8(a3), complement_to_uint8(a2),
+                  complement_to_uint8(a1), complement_to_uint8(a0)) &&
+    \int32_as_int8(d0, a3, a2, a1, a0))
+  
+}
+
+tag voidP = {
+}
+
+type voidP = [voidP]
+
+tag charP = voidP with {
+  int8 charM: 8;
+}
+
+tag intP = voidP with {
+  int32 intM: 32;
+}
+
+unit div(int32 a, int32 b, intP[..] d, intP[..] r)
+  requires ((_C_21 : (a >= (0 :> int32))) &&
+             ((_C_22 : (b > (0 :> int32))) &&
+               ((_C_23 : \at((((\offset_min(\at(d,Here)) <= \at(0,Here)) &&
+                                (\offset_max(\at(d,Here)) >= \at(0,Here))) &&
+                               true),Here)) &&
+                 ((_C_24 : \at((((\offset_min(\at(r,Here)) <= \at(0,Here)) &&
+                                  (\offset_max(\at(r,Here)) >= \at(0,Here))) &&
+                                 true),Here)) &&
+                   (_C_25 : ((\base_block(d) == \base_block(r)) ==>
+                              (! (d == r))))))));
+behavior default:
+  assigns d.intM,
+  r.intM;
+  ensures (_C_16 : ((_C_17 : ((\at(a,Old) :> integer) ==
+                               (((\at(d,Old).intM :> integer) *
+                                  (\at(b,Old) :> integer)) +
+                                 (\at(r,Old).intM :> integer)))) &&
+                     ((_C_19 : ((0 :> int32) <= \at(r,Old).intM)) &&
+                       (_C_20 : (\at(r,Old).intM < \at(b,Old))))));
+{  
+   (var int32 d_p);
+   
+   {  (_C_1 : (d_p = (0 :> int32)));
+      (LoopEntry : 
+      loop 
+      behavior default:
+        invariant (_C_4 : (a >= (0 :> int32)));
+      behavior default:
+        invariant (_C_3 : ((\at(a,Pre) :> integer) ==
+                            (((d_p :> integer) * (b :> integer)) +
+                              (a :> integer))));
+      variant (_C_2 : a);
+      while (true)
+      {  
+         {  (LoopCurrent : (if (_C_5 : (a >= b)) then () else 
+                           (goto while_0_break)));
+            
+            {  (_C_8 : (a = (_C_7 : ((_C_6 : (a - b)) :> int32))));
+               (_C_11 : (d_p = (_C_10 : ((_C_9 : (d_p + (1 :> int32))) :> int32))))
+            }
+         }
+      });
+      (while_0_break : ());
+      (_C_13 : ((_C_12 : d.intM) = d_p));
+      (_C_15 : ((_C_14 : r.intM) = a));
+      
+      (return ())
+   }
+}
+
+int32 main()
+behavior default:
+  ensures true;
+{  
+   (var intP[0..2] pp);
+   
+   (var int32 __retres);
+   
+   {  (_C_27 : (pp = (_C_26 : (new intP[3]))));
+      (_C_29 : ((_C_28 : (pp + (2 :> int32)).intM) = (42 :> int32)));
+      (_C_31 : div((10 :> int32), (2 :> int32), pp,
+                   (_C_30 : (pp + (1 :> int32)))));
+      
+      {  
+         (assert for default: (_C_32 : (astraver : (((pp + 0).intM ==
+                                                      (5 :> int32)) &&
+                                                     ((pp + 1).intM ==
+                                                       (0 :> int32))))));
+         ()
+      };
+      
+      {  
+         (assert for default: (_C_33 : (astraver : ((pp + 2).intM ==
+                                                     (42 :> int32)))));
+         ()
+      };
+      (_C_34 : (__retres = (0 :> int32)));
+      (_C_35 : (free(pp)));
+      
+      (return __retres)
+   }
+}

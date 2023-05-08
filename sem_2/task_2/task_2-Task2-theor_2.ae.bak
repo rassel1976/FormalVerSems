@@ -1,0 +1,9 @@
+(* this is the prelude for Alt-Ergo, version >= 0.95.2 *)
+(* this is a prelude for Alt-Ergo integer arithmetic *)
+axiom CompatOrderMult :
+  (forall x:int. forall y:int. forall z:int. ((x <= y) -> ((0 <= z) ->
+  ((x * z) <= (y * z)))))
+
+goal theor :
+  (not (exists x:int. ((0 <  x) and (((x * 2) = (x + x)) and
+       (forall t:int. ((0 <  t) -> ((t * x) = x)))))))

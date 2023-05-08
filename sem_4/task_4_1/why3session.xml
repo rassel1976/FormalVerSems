@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="Z3" version="4.8.12" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="2" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
+<file name="../task_4_1.mlw" expanded="true">
+<theory name="MapVer" sum="d41d8cd98f00b204e9800998ecf8427e" expanded="true">
+</theory>
+<theory name="ArrayTask" sum="746c2aed8c14099c11f8ea7f7af376ea" expanded="true">
+ <goal name="WP_parameter replace" expl="VC for replace" expanded="true">
+ <proof prover="0" obsolete="true"><result status="timeout" time="5.00"/></proof>
+ <proof prover="1" obsolete="true"><result status="highfailure" time="0.00"/></proof>
+ <proof prover="2" obsolete="true"><result status="unknown" time="0.04" steps="9854"/></proof>
+ <transf name="split_goal_wp" expanded="true">
+  <goal name="WP_parameter replace.1" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="2"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2119"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.2" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.03"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="2"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2107"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.3" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="8"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2818"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.4" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.00"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="2"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2331"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.5" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="4"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2179"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.6" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="4"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2183"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.7" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="10"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3622"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.8" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2596"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.9" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3364"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.10" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="22"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3618"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.11" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="24"/></proof>
+  <proof prover="2"><result status="valid" time="0.03" steps="3768"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.12" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="18"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2590"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.13" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="18"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2594"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.14" expl="loop variant decrease">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2625"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.15" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.03"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="14"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2870"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.16" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="14"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="3585"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.17" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.00"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="20"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3815"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.18" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.03"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="22"/></proof>
+  <proof prover="2"><result status="valid" time="0.03" steps="4090"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.19" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2864"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.20" expl="loop invariant preservation">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.03" steps="2868"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.21" expl="loop variant decrease">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="14"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2899"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.22" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.02"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="14"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3776"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.23" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="16"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="3921"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.24" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.01"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="10"/></proof>
+  <proof prover="2"><result status="valid" time="0.02" steps="2797"/></proof>
+  </goal>
+  <goal name="WP_parameter replace.25" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.00"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="10"/></proof>
+  <proof prover="2"><result status="valid" time="0.01" steps="2801"/></proof>
+  </goal>
+ </transf>
+ </goal>
+</theory>
+</file>
+</why3session>

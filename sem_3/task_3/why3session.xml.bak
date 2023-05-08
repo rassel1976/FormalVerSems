@@ -1,0 +1,770 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="2" name="Z3" version="4.8.12" timelimit="5" steplimit="0" memlimit="1000"/>
+<file name="../task_3.mlw" expanded="true">
+<theory name="Task3" sum="14dd9b8a36b2576f6ac10ea2290b26d3" expanded="true">
+ <goal name="div_rev" expl="">
+ <proof prover="0"><result status="valid" time="0.06" steps="14311"/></proof>
+ <proof prover="1"><result status="timeout" time="5.00"/></proof>
+ <proof prover="2"><result status="unknown" time="1.36"/></proof>
+ </goal>
+ <goal name="sqrt_sqrt" expl="">
+ <proof prover="0"><result status="valid" time="0.02" steps="2205"/></proof>
+ <proof prover="1"><result status="valid" time="0.00" steps="0"/></proof>
+ <proof prover="2"><result status="valid" time="0.02"/></proof>
+ </goal>
+ <goal name="WP_parameter sqrt" expl="VC for sqrt">
+ <transf name="split_goal_wp">
+  <goal name="WP_parameter sqrt.1" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.01" steps="1760"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="2"/></proof>
+  <proof prover="2"><result status="valid" time="0.01"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.2" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.01" steps="1511"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="2"/></proof>
+  <proof prover="2"><result status="valid" time="0.00"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.3" expl="loop invariant init">
+  <proof prover="0"><result status="valid" time="0.03" steps="10913"/></proof>
+  <proof prover="1"><result status="timeout" time="5.00"/></proof>
+  <proof prover="2"><result status="valid" time="0.01"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.4" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.01" steps="1714"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="10"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.5" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.03" steps="2583"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="21"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.6" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.04" steps="5564"/></proof>
+  <proof prover="1"><result status="timeout" time="5.00"/></proof>
+  <proof prover="2"><result status="valid" time="0.01"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.7" expl="precondition">
+  <proof prover="0"><result status="valid" time="0.02" steps="1687"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="14"/></proof>
+  <proof prover="2"><result status="valid" time="0.00"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.8" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.03" steps="2856"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="21"/></proof>
+  <proof prover="2"><result status="valid" time="0.01"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.9" expl="assertion">
+  <proof prover="0"><result status="unknown" time="0.12" steps="45835"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="24"/></proof>
+  <proof prover="2"><result status="timeout" time="5.00"/></proof>
+  <metas>
+   <ts_pos name="real" arity="0" id="2"
+    ip_theory="BuiltIn">
+    <ip_library name="why3"/>
+    <ip_library name="BuiltIn"/>
+    <ip_qualid name="real"/>
+   </ts_pos>
+   <ts_pos name="bool" arity="0" id="3"
+    ip_theory="Bool">
+    <ip_library name="why3"/>
+    <ip_library name="Bool"/>
+    <ip_qualid name="bool"/>
+   </ts_pos>
+   <ts_pos name="tuple0" arity="0" id="20"
+    ip_theory="Tuple0">
+    <ip_library name="why3"/>
+    <ip_library name="Tuple0"/>
+    <ip_qualid name="tuple0"/>
+   </ts_pos>
+   <ts_pos name="unit" arity="0" id="21"
+    ip_theory="Unit">
+    <ip_library name="why3"/>
+    <ip_library name="Unit"/>
+    <ip_qualid name="unit"/>
+   </ts_pos>
+   <ts_pos name="ref" arity="1" id="2233"
+    ip_theory="Ref">
+    <ip_library name="ref"/>
+    <ip_qualid name="ref"/>
+   </ts_pos>
+   <ls_pos name="infix =" id="10"
+    ip_theory="BuiltIn">
+    <ip_library name="why3"/>
+    <ip_library name="BuiltIn"/>
+    <ip_qualid name="infix ="/>
+   </ls_pos>
+   <ls_pos name="zero" id="202"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="zero"/>
+   </ls_pos>
+   <ls_pos name="one" id="203"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="one"/>
+   </ls_pos>
+   <ls_pos name="infix &lt;" id="204"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="infix &lt;"/>
+   </ls_pos>
+   <ls_pos name="infix +" id="1373"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="infix +"/>
+   </ls_pos>
+   <ls_pos name="prefix -" id="1374"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="prefix -"/>
+   </ls_pos>
+   <ls_pos name="infix *" id="1375"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="infix *"/>
+   </ls_pos>
+   <ls_pos name="prefix !" id="2239"
+    ip_theory="Ref">
+    <ip_library name="ref"/>
+    <ip_qualid name="prefix !"/>
+   </ls_pos>
+   <ls_pos name="sqrt_d" id="2381"
+    ip_theory="Task3">
+    <ip_qualid name="sqrt_d"/>
+   </ls_pos>
+   <ls_pos name="div_d" id="2422" ip_theory="Task3">
+    <ip_qualid name="div_d"/>
+   </ls_pos>
+   <pr_pos name="Assoc" id="1376"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Assoc"/>
+   </pr_pos>
+   <pr_pos name="Unit_def_l" id="1383"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Unit_def_l"/>
+   </pr_pos>
+   <pr_pos name="Unit_def_r" id="1386"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Unit_def_r"/>
+   </pr_pos>
+   <pr_pos name="Inv_def_l" id="1389"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Inv_def_l"/>
+   </pr_pos>
+   <pr_pos name="Inv_def_r" id="1392"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Inv_def_r"/>
+   </pr_pos>
+   <pr_pos name="Comm" id="1395"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CommutativeGroup"/>
+    <ip_qualid name="Comm"/>
+    <ip_qualid name="Comm"/>
+   </pr_pos>
+   <pr_pos name="Assoc" id="1400"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Assoc"/>
+    <ip_qualid name="Assoc"/>
+   </pr_pos>
+   <pr_pos name="Mul_distr_l" id="1407"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Mul_distr_l"/>
+   </pr_pos>
+   <pr_pos name="Mul_distr_r" id="1414"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Mul_distr_r"/>
+   </pr_pos>
+   <pr_pos name="Comm" id="1432"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Comm"/>
+    <ip_qualid name="Comm"/>
+   </pr_pos>
+   <pr_pos name="Unitary" id="1437"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Unitary"/>
+   </pr_pos>
+   <pr_pos name="NonTrivialRing" id="1440"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="NonTrivialRing"/>
+   </pr_pos>
+   <pr_pos name="Refl" id="1452"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Refl"/>
+   </pr_pos>
+   <pr_pos name="Trans" id="1455"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Trans"/>
+   </pr_pos>
+   <pr_pos name="Antisymm" id="1462"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Antisymm"/>
+   </pr_pos>
+   <pr_pos name="Total" id="1467"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="Total"/>
+   </pr_pos>
+   <pr_pos name="ZeroLessOne" id="1472"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="ZeroLessOne"/>
+   </pr_pos>
+   <pr_pos name="CompatOrderAdd" id="1473"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CompatOrderAdd"/>
+   </pr_pos>
+   <pr_pos name="CompatOrderMult" id="1480"
+    ip_theory="Int">
+    <ip_library name="int"/>
+    <ip_qualid name="CompatOrderMult"/>
+   </pr_pos>
+   <pr_pos name="sqrt_def" id="2383"
+    ip_theory="Task3">
+    <ip_qualid name="sqrt_def"/>
+   </pr_pos>
+   <pr_pos name="div_def" id="2425"
+    ip_theory="Task3">
+    <ip_qualid name="div_def"/>
+   </pr_pos>
+   <pr_pos name="div_rev" id="2437"
+    ip_theory="Task3">
+    <ip_qualid name="div_rev"/>
+   </pr_pos>
+   <meta name="remove_logic">
+    <meta_arg_ls id="10"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="202"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="203"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="204"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="1373"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="1374"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="1375"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="2239"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="2381"/>
+   </meta>
+   <meta name="remove_logic">
+    <meta_arg_ls id="2422"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1376"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1383"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1386"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1389"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1392"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1395"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1400"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1407"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1414"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1432"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1437"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1440"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1452"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1455"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1462"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1467"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1472"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1473"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="1480"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="2383"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="2425"/>
+   </meta>
+   <meta name="remove_prop">
+    <meta_arg_pr id="2437"/>
+   </meta>
+   <meta name="remove_type">
+    <meta_arg_ts id="2"/>
+   </meta>
+   <meta name="remove_type">
+    <meta_arg_ts id="3"/>
+   </meta>
+   <meta name="remove_type">
+    <meta_arg_ts id="20"/>
+   </meta>
+   <meta name="remove_type">
+    <meta_arg_ts id="21"/>
+   </meta>
+   <meta name="remove_type">
+    <meta_arg_ts id="2233"/>
+   </meta>
+   <goal name="WP_parameter sqrt.9" expl="assertion">
+   <transf name="eliminate_builtin">
+    <goal name="WP_parameter sqrt.9.1" expl="assertion">
+    <proof prover="0" obsolete="true"><result status="unknown" time="0.05" steps="15271"/></proof>
+    <proof prover="1" obsolete="true"><result status="valid" time="0.01" steps="22"/></proof>
+    <proof prover="2" obsolete="true"><result status="valid" time="0.02"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </metas>
+  </goal>
+  <goal name="WP_parameter sqrt.10" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.02" steps="2593"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="22"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.11" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.02" steps="1896"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="24"/></proof>
+  <proof prover="2"><result status="valid" time="0.00"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.12" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.01" steps="1924"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="25"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.13" expl="assertion">
+  <proof prover="0"><result status="unknown" time="0.10" steps="31294"/></proof>
+  <proof prover="1"><result status="valid" time="0.05" steps="153"/></proof>
+  <proof prover="2"><result status="timeout" time="5.00"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.14" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.02" steps="1959"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="28"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.15" expl="assertion">
+  <proof prover="0"><result status="valid" time="0.02" steps="3603"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="42"/></proof>
+  <proof prover="2"><result status="valid" time="0.01"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.16" expl="loop invariant preservation">
+  <proof prover="0" obsolete="true"><result status="unknown" time="1.12" steps="265305"/></proof>
+  <transf name="inline_goal">
+   <goal name="WP_parameter sqrt.16.1" expl="loop invariant preservation">
+   <transf name="split_goal_wp">
+    <goal name="WP_parameter sqrt.16.1.1" expl="VC for sqrt">
+    <proof prover="0"><result status="valid" time="0.04" steps="21339"/></proof>
+    <proof prover="1"><result status="timeout" time="5.00"/></proof>
+    <proof prover="2"><result status="timeout" time="5.00"/></proof>
+    <metas>
+     <ts_pos name="real" arity="0" id="2"
+      ip_theory="BuiltIn">
+      <ip_library name="why3"/>
+      <ip_library name="BuiltIn"/>
+      <ip_qualid name="real"/>
+     </ts_pos>
+     <ts_pos name="bool" arity="0" id="3"
+      ip_theory="Bool">
+      <ip_library name="why3"/>
+      <ip_library name="Bool"/>
+      <ip_qualid name="bool"/>
+     </ts_pos>
+     <ts_pos name="tuple0" arity="0" id="20"
+      ip_theory="Tuple0">
+      <ip_library name="why3"/>
+      <ip_library name="Tuple0"/>
+      <ip_qualid name="tuple0"/>
+     </ts_pos>
+     <ts_pos name="unit" arity="0" id="21"
+      ip_theory="Unit">
+      <ip_library name="why3"/>
+      <ip_library name="Unit"/>
+      <ip_qualid name="unit"/>
+     </ts_pos>
+     <ts_pos name="ref" arity="1" id="2233"
+      ip_theory="Ref">
+      <ip_library name="ref"/>
+      <ip_qualid name="ref"/>
+     </ts_pos>
+     <ls_pos name="infix =" id="10"
+      ip_theory="BuiltIn">
+      <ip_library name="why3"/>
+      <ip_library name="BuiltIn"/>
+      <ip_qualid name="infix ="/>
+     </ls_pos>
+     <ls_pos name="zero" id="202"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="zero"/>
+     </ls_pos>
+     <ls_pos name="one" id="203"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="one"/>
+     </ls_pos>
+     <ls_pos name="infix &lt;" id="204"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="infix &lt;"/>
+     </ls_pos>
+     <ls_pos name="infix +" id="1373"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="infix +"/>
+     </ls_pos>
+     <ls_pos name="prefix -" id="1374"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="prefix -"/>
+     </ls_pos>
+     <ls_pos name="infix *" id="1375"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="infix *"/>
+     </ls_pos>
+     <ls_pos name="prefix !" id="2239"
+      ip_theory="Ref">
+      <ip_library name="ref"/>
+      <ip_qualid name="prefix !"/>
+     </ls_pos>
+     <ls_pos name="sqrt_d" id="2381"
+      ip_theory="Task3">
+      <ip_qualid name="sqrt_d"/>
+     </ls_pos>
+     <ls_pos name="p" id="2406" ip_theory="Task3">
+      <ip_qualid name="p"/>
+     </ls_pos>
+     <ls_pos name="div_d" id="2422"
+      ip_theory="Task3">
+      <ip_qualid name="div_d"/>
+     </ls_pos>
+     <pr_pos name="Assoc" id="1376"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Assoc"/>
+     </pr_pos>
+     <pr_pos name="Unit_def_l" id="1383"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Unit_def_l"/>
+     </pr_pos>
+     <pr_pos name="Unit_def_r" id="1386"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Unit_def_r"/>
+     </pr_pos>
+     <pr_pos name="Inv_def_l" id="1389"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Inv_def_l"/>
+     </pr_pos>
+     <pr_pos name="Inv_def_r" id="1392"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Inv_def_r"/>
+     </pr_pos>
+     <pr_pos name="Comm" id="1395"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CommutativeGroup"/>
+      <ip_qualid name="Comm"/>
+      <ip_qualid name="Comm"/>
+     </pr_pos>
+     <pr_pos name="Assoc" id="1400"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Assoc"/>
+      <ip_qualid name="Assoc"/>
+     </pr_pos>
+     <pr_pos name="Mul_distr_l" id="1407"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Mul_distr_l"/>
+     </pr_pos>
+     <pr_pos name="Mul_distr_r" id="1414"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Mul_distr_r"/>
+     </pr_pos>
+     <pr_pos name="Comm" id="1432"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Comm"/>
+      <ip_qualid name="Comm"/>
+     </pr_pos>
+     <pr_pos name="Unitary" id="1437"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Unitary"/>
+     </pr_pos>
+     <pr_pos name="NonTrivialRing" id="1440"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="NonTrivialRing"/>
+     </pr_pos>
+     <pr_pos name="Refl" id="1452"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Refl"/>
+     </pr_pos>
+     <pr_pos name="Trans" id="1455"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Trans"/>
+     </pr_pos>
+     <pr_pos name="Antisymm" id="1462"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Antisymm"/>
+     </pr_pos>
+     <pr_pos name="Total" id="1467"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="Total"/>
+     </pr_pos>
+     <pr_pos name="ZeroLessOne" id="1472"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="ZeroLessOne"/>
+     </pr_pos>
+     <pr_pos name="CompatOrderAdd" id="1473"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CompatOrderAdd"/>
+     </pr_pos>
+     <pr_pos name="CompatOrderMult" id="1480"
+      ip_theory="Int">
+      <ip_library name="int"/>
+      <ip_qualid name="CompatOrderMult"/>
+     </pr_pos>
+     <pr_pos name="div_rev" id="2437"
+      ip_theory="Task3">
+      <ip_qualid name="div_rev"/>
+     </pr_pos>
+     <pr_pos name="sqrt_sqrt" id="2447"
+      ip_theory="Task3">
+      <ip_qualid name="sqrt_sqrt"/>
+     </pr_pos>
+     <meta name="remove_logic">
+      <meta_arg_ls id="10"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="202"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="203"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="204"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="1373"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="1374"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="1375"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="2239"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="2381"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="2406"/>
+     </meta>
+     <meta name="remove_logic">
+      <meta_arg_ls id="2422"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1376"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1383"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1386"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1389"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1392"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1395"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1400"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1407"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1414"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1432"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1437"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1440"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1452"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1455"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1462"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1467"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1472"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1473"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="1480"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="2437"/>
+     </meta>
+     <meta name="remove_prop">
+      <meta_arg_pr id="2447"/>
+     </meta>
+     <meta name="remove_type">
+      <meta_arg_ts id="2"/>
+     </meta>
+     <meta name="remove_type">
+      <meta_arg_ts id="3"/>
+     </meta>
+     <meta name="remove_type">
+      <meta_arg_ts id="20"/>
+     </meta>
+     <meta name="remove_type">
+      <meta_arg_ts id="21"/>
+     </meta>
+     <meta name="remove_type">
+      <meta_arg_ts id="2233"/>
+     </meta>
+     <goal name="WP_parameter sqrt.16.1.1" expl="VC for sqrt">
+     <transf name="eliminate_builtin">
+      <goal name="WP_parameter sqrt.16.1.1.1" expl="VC for sqrt">
+      <proof prover="0" obsolete="true"><result status="valid" time="0.04" steps="9332"/></proof>
+      <proof prover="1" obsolete="true"><result status="timeout" time="5.00"/></proof>
+      <proof prover="2" obsolete="true"><result status="unknown" time="3.94"/></proof>
+      </goal>
+     </transf>
+     </goal>
+    </metas>
+    </goal>
+    <goal name="WP_parameter sqrt.16.1.2" expl="VC for sqrt">
+    <proof prover="0"><result status="valid" time="0.03" steps="4814"/></proof>
+    <proof prover="1"><result status="valid" time="0.03" steps="127"/></proof>
+    <proof prover="2"><result status="valid" time="0.02"/></proof>
+    </goal>
+    <goal name="WP_parameter sqrt.16.1.3" expl="VC for sqrt">
+    <proof prover="0"><result status="valid" time="0.02" steps="2663"/></proof>
+    <proof prover="1"><result status="valid" time="0.00" steps="39"/></proof>
+    <proof prover="2"><result status="valid" time="0.01"/></proof>
+    </goal>
+   </transf>
+   </goal>
+  </transf>
+  </goal>
+  <goal name="WP_parameter sqrt.17" expl="loop variant decrease">
+  <proof prover="0"><result status="valid" time="0.02" steps="3136"/></proof>
+  <proof prover="1"><result status="valid" time="0.01" steps="35"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+  <goal name="WP_parameter sqrt.18" expl="postcondition">
+  <proof prover="0"><result status="valid" time="0.05" steps="2456"/></proof>
+  <proof prover="1"><result status="valid" time="0.00" steps="12"/></proof>
+  <proof prover="2"><result status="valid" time="0.02"/></proof>
+  </goal>
+ </transf>
+ </goal>
+ <goal name="WP_parameter sqrt_gr_zero" expl="VC for sqrt_gr_zero" expanded="true">
+ <proof prover="0"><result status="valid" time="0.01" steps="2067"/></proof>
+ <proof prover="1"><result status="valid" time="0.00" steps="4"/></proof>
+ <proof prover="2"><result status="valid" time="0.00"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>

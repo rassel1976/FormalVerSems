@@ -1,0 +1,11 @@
+theory Task2
+    use import int.Int
+
+    lemma triv:
+        forall x : int.
+            x * 2 = x + x
+
+    goal theor:
+        not (exists x : int.
+            (x > 0 && (forall t : int. t > 0 -> t * x = x)))
+end

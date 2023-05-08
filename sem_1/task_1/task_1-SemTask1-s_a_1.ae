@@ -1,0 +1,39 @@
+(* this is the prelude for Alt-Ergo, version >= 0.95.2 *)
+(* this is a prelude for Alt-Ergo integer arithmetic *)
+axiom CompatOrderMult :
+  (forall x:int. forall y:int. forall z:int. ((x <= y) -> ((0 <= z) ->
+  ((x * z) <= (y * z)))))
+
+predicate div_phi(x1: int, x2: int) = ((0 <= x1) and (0 <  x2))
+
+predicate div_psi(x1: int, x2: int, z1: int) = ((0 <= (x1 - (z1 * x2))) and
+  ((x1 - (z1 * x2)) <  x2))
+
+predicate q(x: int, y1: int, y2: int) = (((not (x = 0)) -> ((0 <= y1) and
+  (0 <  y2))) and ((x = 0) -> ((y1 = y2) and (y2 = 0))))
+
+predicate p2(x: int, y1: int, y2: int) =
+  (forall r:int. ((((r * r) <= x) and (x <  ((r + 1) * (r + 1)))) ->
+  (((y1 <= y2) -> (y1 = r)) and (q(x, y1, y2) and (r <= y2)))))
+
+predicate p(x: int, y1: int, y2: int) =
+  (exists r:int. ((((r * r) <= x) and (x <  ((r + 1) * (r + 1)))) and
+  (((y1 <= y2) -> (y1 = r)) and (q(x, y1, y2) and (r <= y2)))))
+
+axiom l1 :
+  (forall x:int. forall r1:int. (((0 <= x) and div_psi((x + 1), 2, r1)) ->
+  (exists r:int. ((((r * r) <= x) and (x <  ((r + 1) * (r + 1)))) and
+  ((x <= r1) -> (x = r))))))
+
+axiom l2 :
+  (forall x:int. forall r1:int. (((0 <= x) and div_psi((x + 1), 2, r1)) ->
+  q(x, x, r1)))
+
+axiom l3 :
+  (forall x:int. forall r1:int. (((0 <= x) and div_psi((x + 1), 2, r1)) ->
+  (exists r:int. ((((r * r) <= x) and (x <  ((r + 1) * (r + 1)))) and
+  (r <= r1)))))
+
+goal s_a :
+  (forall x:int. forall r1:int. (((0 <= x) and div_psi((x + 1), 2, r1)) ->
+  p(x, x, r1)))

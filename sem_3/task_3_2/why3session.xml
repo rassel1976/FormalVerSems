@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE why3session PUBLIC "-//Why3//proof session v5//EN"
+"http://why3.lri.fr/why3session.dtd">
+<why3session shape_version="4">
+<prover id="0" name="Z3" version="4.8.12" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="1" name="Alt-Ergo" version="2.4.2" timelimit="5" steplimit="0" memlimit="1000"/>
+<prover id="2" name="CVC4" version="1.7" timelimit="5" steplimit="0" memlimit="1000"/>
+<file name="../task_3_2.mlw" expanded="true">
+<theory name="Task32" sum="ca889fda6bc7700e97f890c332542f03" expanded="true">
+ <goal name="WP_parameter sqrt_g" expl="VC for sqrt_g" expanded="true">
+ <proof prover="0"><result status="valid" time="0.01"/></proof>
+ <proof prover="1"><result status="valid" time="0.01" steps="31"/></proof>
+ <proof prover="2"><result status="valid" time="0.08" steps="17314"/></proof>
+ </goal>
+ <goal name="WP_parameter sqrt_gr_zero" expl="VC for sqrt_gr_zero" expanded="true">
+ <proof prover="0"><result status="valid" time="0.02"/></proof>
+ <proof prover="1"><result status="valid" time="0.00" steps="10"/></proof>
+ <proof prover="2"><result status="unknown" time="0.04" steps="11750"/></proof>
+ </goal>
+</theory>
+</file>
+</why3session>
