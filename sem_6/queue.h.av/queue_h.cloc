@@ -4,11 +4,23 @@ line = 34
 begin = 12
 end = 57
 
+[_C_13]
+file = "/home/nik/Projects/ver/sem_6/queue.h"
+line = 43
+begin = 13
+end = 25
+
 [_C_5]
 file = "/home/nik/Projects/ver/sem_6/queue.h"
 line = 32
 begin = 12
 end = 51
+
+[_C_12]
+file = "/home/nik/Projects/ver/sem_6/queue.h"
+line = 51
+begin = 12
+end = 45
 
 [_C_9]
 file = "/home/nik/Projects/ver/sem_6/queue.h"
@@ -34,6 +46,12 @@ line = 32
 begin = 12
 end = 51
 
+[_C_15]
+file = "/home/nik/Projects/ver/sem_6/queue.h"
+line = 45
+begin = 13
+end = 33
+
 [_C_10]
 file = "/home/nik/Projects/ver/sem_6/queue.h"
 line = 24
@@ -45,6 +63,12 @@ file = "/home/nik/Projects/ver/sem_6/queue.h"
 line = 36
 begin = 12
 end = 49
+
+[_C_14]
+file = "/home/nik/Projects/ver/sem_6/queue.h"
+line = 44
+begin = 13
+end = 35
 
 [_C_2]
 file = "/home/nik/Projects/ver/sem_6/queue.h"

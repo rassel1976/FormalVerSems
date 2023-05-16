@@ -1,0 +1,336 @@
+
+axiomatic Padding {
+
+  logic type padding
+  
+}
+
+axiomatic Memory_reinterpretation_predicates {
+
+  predicate uint8_as_uint32(uint32 d0, uint8 a0, uint8 a1, uint8 a2, uint8 a3) =
+  ((d0 == ((((((a3 * 256) + a2) * 256) + a1) * 256) + a0)) &&
+    \uint8_as_uint32(d0, a0, a1, a2, a3))
+   
+  logic uint32 complement_to_uint32(int32 v) =
+  (if (v >= 0) then (v :> uint32) else (((v :> integer) + 4294967296) :> uint32))
+   
+  predicate uint8_as_int32(int32 d0, uint8 a3, uint8 a2, uint8 a1, uint8 a0) =
+  (uint8_as_uint32(complement_to_uint32(d0), a3, a2, a1, a0) &&
+    \uint8_as_int32(d0, a3, a2, a1, a0))
+   
+  predicate uint32_as_uint8(uint32 d0, uint8 a0, uint8 a1, uint8 a2, uint8 a3) =
+  (((a0 == (d0 % 256)) &&
+     (let d1 = (d0 / 256)
+     in ((a1 == (d1 % 256)) &&
+          (let d2 = (d1 / 256)
+          in ((a2 == (d2 % 256)) && (let d3 = (d2 / 256) in (a3 == d3))))))) &&
+    \uint32_as_uint8(d0, a0, a1, a2, a3))
+   
+  predicate int32_as_uint8(int32 d0, uint8 a3, uint8 a2, uint8 a1, uint8 a0) =
+  (uint32_as_uint8(complement_to_uint32(d0), a3, a2, a1, a0) &&
+    \int32_as_uint8(d0, a3, a2, a1, a0))
+   
+  logic uint8 complement_to_uint8(int8 v) =
+  (if (v >= 0) then (v :> uint8) else (((v :> integer) + 256) :> uint8))
+   
+  predicate int8_as_int32(int32 d0, int8 a3, int8 a2, int8 a1, int8 a0) =
+  (uint8_as_int32(d0, complement_to_uint8(a3), complement_to_uint8(a2),
+                  complement_to_uint8(a1), complement_to_uint8(a0)) &&
+    \int8_as_int32(d0, a3, a2, a1, a0))
+   
+  predicate int32_as_int8(int32 d0, int8 a3, int8 a2, int8 a1, int8 a0) =
+  (int32_as_uint8(d0, complement_to_uint8(a3), complement_to_uint8(a2),
+                  complement_to_uint8(a1), complement_to_uint8(a0)) &&
+    \int32_as_int8(d0, a3, a2, a1, a0))
+  
+}
+
+tag voidP = {
+}
+
+type voidP = [voidP]
+
+tag charP = voidP with {
+  int8 charM: 8;
+}
+
+tag intP = voidP with {
+  int32 intM: 32;
+}
+
+tag _Queue = voidP with {
+  intP[..] array: 64; 
+  int32 capacity: 32; 
+  int32 curr_elem: 32; 
+  int32 empty_elem: 32; 
+  padding padding: 32;
+}
+
+predicate is_valid_queue{L}(_Queue[..] self) =
+\at(((((((\at((((\offset_min(\at(self,L)) <= \at(0,L)) &&
+                 (\offset_max(\at(self,L)) >= \at(0,L))) &&
+                true),L) &&
+           (self.capacity > (1 :> int32))) &&
+          \at((if (\at(0,L) <= \at(((self.capacity :> integer) - 1),L)) then 
+              (((\offset_min(\at(self.array,L)) <= \at(0,L)) &&
+                 (\offset_max(\at(self.array,L)) >=
+                   \at(((self.capacity :> integer) - 1),L))) &&
+                (\forall integer __framac_tmp1;
+                  (((\at(0,L) <= __framac_tmp1) &&
+                     (__framac_tmp1 <=
+                       \at(((self.capacity :> integer) - 1),L))) ==>
+                    true))) else true),L)) &&
+         ((0 :> int32) <= self.curr_elem)) &&
+        (self.curr_elem < self.capacity)) &&
+       ((0 :> int32) <= self.empty_elem)) &&
+      (self.empty_elem < self.capacity)),L)
+
+predicate is_empty_queue{L}(_Queue[..] self_0) =
+\at((self_0.curr_elem == self_0.empty_elem),L)
+
+logic integer queue_size{L}(_Queue[..] self_1) =
+\at((if (self_1.empty_elem >= self_1.curr_elem) then ((self_1.empty_elem :> integer) -
+                                                       (self_1.curr_elem :> integer)) else 
+    (((self_1.capacity :> integer) + (self_1.empty_elem :> integer)) -
+      (self_1.curr_elem :> integer))),L)
+
+logic integer get_item{L}(_Queue[..] self_2, integer item_number) =
+(\at((if (((self_2.curr_elem :> integer) + item_number) <
+           (self_2.capacity :> integer)) then (self_2.array +
+                                                ((self_2.curr_elem :> integer) +
+                                                  item_number)).intM else 
+     (self_2.array +
+       (((self_2.curr_elem :> integer) + item_number) -
+         (self_2.capacity :> integer))).intM),L) :> integer)
+
+predicate same_items{L1, L2}(_Queue[..] self_3, integer begin, integer size) =
+(\forall integer k_1;
+  (((begin <= k_1) && (k_1 < (begin + size))) ==>
+    (\at(get_item{L1}(self_3, k_1),L1) == \at(get_item{L2}(self_3, k_1),L2))))
+
+predicate is_full_queue{L}(_Queue[..] self_4) =
+\at((if (((self_4.empty_elem :> integer) + 1) < (self_4.capacity :> integer)) then 
+    (((self_4.empty_elem :> integer) + 1) ==
+      (self_4.curr_elem :> integer)) else ((((self_4.empty_elem :> integer) +
+                                              1) -
+                                             (self_4.capacity :> integer)) ==
+                                            (self_4.curr_elem :> integer))),L)
+
+int32 q_init(_Queue[..] self_1, int32 max_size)
+  requires ((_C_24 : ((max_size :> integer) <= (0x7fffffff - 1))) &&
+             ((_C_25 : \at((((\offset_min(\at(self_1,Here)) <= \at(0,Here)) &&
+                              (\offset_max(\at(self_1,Here)) >= \at(0,Here))) &&
+                             true),Here)) &&
+               (_C_26 : (max_size > (0 :> int32)))));
+behavior default:
+  assigns self_1.array,
+  self_1.capacity,
+  self_1.curr_elem,
+  self_1.empty_elem;
+  allocates \at(self_1,Old).array;
+  ensures (_C_15 : ((_C_16 : ((\result == (0 :> int32)) ==>
+                               \freeable{Here}(\at(self_1,Old).array))) &&
+                     ((_C_18 : ((\result == (0 :> int32)) ==>
+                                 \allocable{Old}(\at(self_1,Old).array))) &&
+                       ((_C_20 : ((\result == (0 :> int32)) ==>
+                                   is_valid_queue{Here}(\at(self_1,Old)))) &&
+                         ((_C_22 : ((\result == (0 :> int32)) ==>
+                                     is_empty_queue{Here}(\at(self_1,Old)))) &&
+                           (_C_23 : ((\result == (0 :> int32)) ==>
+                                      (((\at(max_size,Old) :> integer) <=
+                                         (0x7fffffff - 1)) &&
+                                        ((\at(self_1,Old).capacity :> integer) ==
+                                          ((\at(max_size,Old) :> integer) +
+                                            1))))))))));
+{  
+   (var int32 __retres);
+   
+   {  (_C_5 : ((_C_4 : self_1.array) = (_C_3 : (new intP[(_C_2 : ((_C_1 : 
+                                                                  (max_size +
+                                                                    (1 :> int32))) :> uint64))]))));
+      (_C_9 : ((_C_8 : self_1.capacity) = (_C_7 : ((_C_6 : (max_size +
+                                                             (1 :> int32))) :> int32))));
+      (_C_11 : ((_C_10 : self_1.curr_elem) = (0 :> int32)));
+      (_C_13 : ((_C_12 : self_1.empty_elem) = (0 :> int32)));
+      (_C_14 : (__retres = (0 :> int32)));
+      
+      (return __retres)
+   }
+}
+
+unit q_clear(_Queue[..] self_0)
+  requires ((_C_32 : \at((((\offset_min(\at(self_0,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(self_0,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             ((_C_33 : \freeable{Here}(self_0.array)) &&
+               (_C_34 : is_valid_queue{Here}(self_0))));
+behavior default:
+  assigns self_0.array,
+  self_0.capacity,
+  self_0.curr_elem,
+  self_0.empty_elem;
+  allocates \at(self_0.array,Old);
+  ensures (_C_31 : \allocable{Here}(\at(self_0.array,Old)));
+{  
+   {  (_C_28 : (free((_C_27 : self_0.array))));
+      (_C_30 : ((_C_29 : self_0.array) = null));
+      
+      (return ())
+   }
+}
+
+int32 q_add(_Queue[..] self, int32 elem)
+  requires ((_C_68 : \at((((\offset_min(\at(self,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(self,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             (_C_69 : is_valid_queue{Here}(self)));
+behavior default:
+  assigns self.array,
+  self.capacity,
+  self.curr_elem,
+  self.empty_elem,
+  (self.array + [0..((self.capacity :> integer) - 1)]).intM;
+  ensures (_C_59 : ((_C_60 : ((\result == (0 :> int32)) ==>
+                               (! is_full_queue{Old}(\at(self,Old))))) &&
+                     ((_C_62 : ((\result == (0 :> int32)) ==>
+                                 is_valid_queue{Here}(\at(self,Old)))) &&
+                       ((_C_64 : ((\result == (0 :> int32)) ==>
+                                   same_items{Old,
+                                   Here}(\at(self,Old), 0,
+                                         queue_size{Old}(\at(self,Old))))) &&
+                         ((_C_66 : ((\result == (0 :> int32)) ==>
+                                     (get_item{Here}(\at(self,Old),
+                                                     queue_size{Old}(
+                                                     \at(self,Old))) ==
+                                       (\at(elem,Old) :> integer)))) &&
+                           (_C_67 : ((\result == (0 :> int32)) ==>
+                                      ((queue_size{Old}(\at(self,Old)) + 1) ==
+                                        queue_size{Here}(\at(self,Old))))))))));
+{  
+   (var int32 __retres_0);
+   
+   {  (if (_C_43 : ((_C_42 : ((_C_41 : ((_C_40 : ((_C_39 : ((_C_38 : self.empty_elem) +
+                                                             (1 :> int32))) :> int32)) %
+                                         (_C_37 : self.capacity))) :> int32)) ==
+                     (_C_36 : self.curr_elem))) then 
+      {  (_C_35 : (__retres_0 = (-1 :> int32)));
+         
+         (goto return_label)
+      } else ());
+      (_C_48 : ((_C_47 : (_C_46 : ((_C_45 : self.array) +
+                                    (_C_44 : self.empty_elem))).intM) = elem));
+      
+      {  
+         (assert for default: (_C_49 : (astraver : (get_item{Here}(self,
+                                                                   queue_size{Here}(
+                                                                   self)) ==
+                                                     (elem :> integer)))));
+         ()
+      };
+      (_C_57 : ((_C_56 : self.empty_elem) = (_C_55 : ((_C_54 : ((_C_53 : (
+                                                                (_C_52 : 
+                                                                ((_C_51 : self.empty_elem) +
+                                                                  (1 :> int32))) :> int32)) %
+                                                                 (_C_50 : self.capacity))) :> int32))));
+      (_C_58 : (__retres_0 = (0 :> int32)));
+      (return_label : 
+      (return __retres_0))
+   }
+}
+
+int32 q_remove(_Queue[..] self_3, intP[..] elem_0)
+  requires ((_C_90 : \at((((\offset_min(\at(self_3,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(self_3,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             (_C_91 : is_valid_queue{Here}(self_3)));
+behavior default:
+  ensures true;
+{  
+   (var int32 tmp);
+   
+   (var int32 __retres_1);
+   
+   {  (_C_71 : (tmp = (_C_70 : q_is_empty(self_3))));
+      (if (_C_73 : ((tmp :> int32) != (0 :> int32))) then 
+      {  (_C_72 : (__retres_1 = (-1 :> int32)));
+         
+         (goto return_label_0)
+      } else ());
+      (if (_C_80 : (elem_0 != null)) then (_C_79 : ((_C_78 : elem_0.intM) = 
+                                          (_C_77 : (_C_76 : ((_C_75 : self_3.array) +
+                                                              (_C_74 : self_3.curr_elem))).intM))) else ());
+      (_C_88 : ((_C_87 : self_3.curr_elem) = (_C_86 : ((_C_85 : ((_C_84 : (
+                                                                 (_C_83 : 
+                                                                 ((_C_82 : self_3.curr_elem) +
+                                                                   (1 :> int32))) :> int32)) %
+                                                                  (_C_81 : self_3.capacity))) :> int32))));
+      (_C_89 : (__retres_1 = (0 :> int32)));
+      (return_label_0 : 
+      (return __retres_1))
+   }
+}
+
+int32 q_is_empty(_Queue[..] self_2)
+behavior default:
+  ensures true;
+{  
+   (var int32 __retres_2);
+   
+   {  (_C_95 : (__retres_2 = (_C_94 : ((if ((_C_93 : self_2.curr_elem) ==
+                                             (_C_92 : self_2.empty_elem)) then 1 else 0) :> int32))));
+      
+      (return __retres_2)
+   }
+}
+
+int32 test_overflow()
+behavior default:
+  ensures (_C_116 : ((\result == (0 :> int32)) || (\result == (1 :> int32))));
+{  
+   (var _Queue[0] obj);
+   
+   (var int32 add1_res);
+   
+   (var int32 add2_res);
+   
+   (var int32 add3_res);
+   
+   (var int32 __retres_3);
+   
+   {  (_C_97 : (obj = (_C_96 : (new _Queue[1]))));
+      (_C_98 : q_init(obj, (2 :> int32)));
+      (if (_C_101 : ((_C_100 : obj.array) == null)) then 
+      {  (_C_99 : (__retres_3 = (1 :> int32)));
+         
+         (goto return_label_1)
+      } else ());
+      (_C_103 : (add1_res = (_C_102 : q_add(obj, (1 :> int32)))));
+      (_C_105 : (add2_res = (_C_104 : q_add(obj, (2 :> int32)))));
+      (_C_107 : (add3_res = (_C_106 : q_add(obj, (3 :> int32)))));
+      (_C_108 : q_clear(obj));
+      (if (_C_110 : (add1_res == (0 :> int32))) then (if (_C_109 : (add2_res ==
+                                                                    (0 :> int32))) then () else 
+                                                     (goto _LAND)) else 
+      (goto _LAND));
+      
+      (goto _LAND_0);
+      (_LAND : (_LAND : 
+               {  (_C_111 : (__retres_3 = (1 :> int32)));
+                  
+                  (goto return_label_1)
+               }));
+      (_LAND_0 : ());
+      (if (_C_114 : (add3_res != (0 :> int32))) then 
+      {  (_C_113 : (__retres_3 = (0 :> int32)));
+         
+         (goto return_label_1)
+      } else 
+      {  (_C_112 : (__retres_3 = (-1 :> int32)));
+         
+         (goto return_label_1)
+      });
+      (return_label_1 : (_C_115 : (free(obj))));
+      
+      (return __retres_3)
+   }
+}

@@ -1,7 +1,11 @@
 #include <limits.h>
 
+struct Item {
+    int a, b;
+};
+
 struct Queue {
-    int *array;
+    struct Item *array;
     int capacity;
     int curr_elem;
     int empty_elem;
@@ -18,12 +22,15 @@ struct Queue {
         self->empty_elem - self->curr_elem : self->capacity + self->empty_elem - self->curr_elem;
 
     ///logic integer get_item (struct Queue *self, integer item_number) = self->array[(self->curr_elem + item_number) % self->capacity];
-    logic integer get_item (struct Queue *self, integer item_number) = self->curr_elem + item_number < self->capacity ?
-         self->array[self->curr_elem + item_number] : self->array[self->curr_elem + item_number - self->capacity];
+    logic struct Item* get_item (struct Queue *self, integer item_number) = self->curr_elem + item_number < self->capacity ?
+         &self->array[self->curr_elem + item_number] : &self->array[self->curr_elem + item_number - self->capacity];
+
+    predicate compare_items{L1, L2} (struct Item *i1, struct Item *i2) = (\at(i1->a, L1) == \at(i2->a, L2)) && 
+        (\at(i1->b, L1) == \at(i2->b, L2));
 
     predicate same_items{L1, L2} (struct Queue *self, integer begin, integer size) = 
         \forall integer k;
-            begin <= k < begin + size ==> \at(get_item(self, k), L1) == \at(get_item(self, k), L2);
+            begin <= k < begin + size ==> compare_items{L1, L2}(get_item{L1}(self, k), get_item{L2}(self, k));
 
     ///predicate is_full_queue (struct Queue *self) = (self->empty_elem + 1) % self->capacity == self->curr_elem;
     predicate is_full_queue (struct Queue *self) = self->empty_elem + 1 < self->capacity ? 
@@ -68,6 +75,7 @@ void q_clear(struct Queue *self);
 /*@
     requires \valid(self);
     requires is_valid_queue(self);
+    requires \valid(elem);
 
     assigns self->curr_elem;
     assigns self->empty_elem;
@@ -79,11 +87,11 @@ void q_clear(struct Queue *self);
     ensures is_valid_queue(self);
     ensures same_items{Old, Here}(self, 0, queue_size{Old}(self));
     ensures \result != 0 ==> queue_size{Old}(self) == queue_size(self);
-    ensures \result == 0 ==> get_item(self, queue_size{Old}(self)) == elem;
+    ensures \result == 0 ==> compare_items{Here, Here}(get_item(self, queue_size{Old}(self)) ,elem);
     ensures \result == 0 ==> queue_size{Old}(self) + 1 == queue_size(self);
 */
 
-int q_add(struct Queue *self, int elem);
+int q_add(struct Queue *self, struct Item *elem);
 
 /*@
     requires \valid(self);
@@ -101,12 +109,12 @@ int q_add(struct Queue *self, int elem);
     ensures is_valid_queue(self);
     ensures same_items{Old, Here}(self, 0, queue_size{Here}(self));
     ensures \result != 0 ==> queue_size{Old}(self) == queue_size(self);
-    ensures \result != 0 && \valid(elem) ==> \at(*elem, Old) == *elem;
-    ensures \result == 0 && \valid(elem) ==> get_item{Old}(self, queue_size(self)) == *elem;
+    ensures \result != 0 && \valid(elem) ==> compare_items{Old, Here}(elem, elem);
+    ensures \result == 0 && \valid(elem) ==> compare_items{Here, Here}(get_item{Old}(self, queue_size(self)), elem);
     ensures \result == 0 ==> queue_size{Old}(self) - 1 == queue_size(self);
 */
 
-int q_remove(struct Queue *self, int *elem);
+int q_remove(struct Queue *self, struct Item *elem);
 
 /*@
     requires \valid(self);

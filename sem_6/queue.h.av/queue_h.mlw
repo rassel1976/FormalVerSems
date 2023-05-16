@@ -7639,73 +7639,6 @@ theory Logic_is_empty_queue
   
 end
 
-theory Logic_same_items
-
-  use import Root_intP 
-  
-  use import Root__Queue 
-  
-  use import core.Pointer 
-  
-  use import core.Memory 
-  
-  use enum.Int32 
-  
-  use import int.Int 
-  
-  use import core.Alloc_table 
-  
-  use why3.Bool.Bool 
-  
-  predicate same_items (self_1 : (pointer _Queue)) (begin_0 : int) (size :
-  int) (intP_array_7_alloc_table_at_L2 : (alloc_table intP))
-  (intP_array_7_alloc_table_at_L1 : (alloc_table intP))
-  (_Queue_array_self_1_4_at_L2 : (memory _Queue (pointer intP)))
-  (_Queue_array_self_1_4_at_L1 : (memory _Queue (pointer intP)))
-  (intP_intM_array_7_at_L2 : (memory intP Int32.t)) (intP_intM_array_7_at_L1
-  : (memory intP Int32.t))
-  =
-     ((if ((<=) begin_0 (Int.(-) (Int.(+) begin_0 size) (1))) then
-       (((<=)
-        (offset_min intP_array_7_alloc_table_at_L1
-        (select _Queue_array_self_1_4_at_L1 self_1)) begin_0)
-       /\
-       (((>=)
-        (offset_max intP_array_7_alloc_table_at_L1
-        (select _Queue_array_self_1_4_at_L1 self_1))
-        (Int.(-) (Int.(+) begin_0 size) (1)))
-       /\
-       (forall __framac_tmp4 : int.
-        ((((<=) begin_0 __framac_tmp4) /\
-         ((<=) __framac_tmp4 (Int.(-) (Int.(+) begin_0 size) (1)))) ->
-         ((=) true true))))) else ((=) true true))
-     /\
-     ((if ((<=) begin_0 (Int.(-) (Int.(+) begin_0 size) (1))) then
-       (((<=)
-        (offset_min intP_array_7_alloc_table_at_L2
-        (select _Queue_array_self_1_4_at_L2 self_1)) begin_0)
-       /\
-       (((>=)
-        (offset_max intP_array_7_alloc_table_at_L2
-        (select _Queue_array_self_1_4_at_L2 self_1))
-        (Int.(-) (Int.(+) begin_0 size) (1)))
-       /\
-       (forall __framac_tmp3 : int.
-        ((((<=) begin_0 __framac_tmp3) /\
-         ((<=) __framac_tmp3 (Int.(-) (Int.(+) begin_0 size) (1)))) ->
-         ((=) true true))))) else ((=) true true))
-     /\
-     (forall k_1 : int.
-      ((((<=) begin_0 k_1) /\ ((<) k_1 (Int.(+) begin_0 size))) ->
-       (Int32.(=)
-       (select intP_intM_array_7_at_L1
-       (shift (select _Queue_array_self_1_4_at_L1 self_1) k_1))
-       (select intP_intM_array_7_at_L2
-       (shift (select _Queue_array_self_1_4_at_L2 self_1) k_1)))))))
-  
-  
-end
-
 module Function_q_init
 
   use import Struct_intP 
@@ -7739,45 +7672,45 @@ module Function_q_init
   use why3.Bool.Bool 
   
   val q_init
-  (self_2 : (pointer _Queue)) 
+  (self_0_0 : (pointer _Queue)) 
    (max_size : Int32.t) 
-    (_Queue_self_5_alloc_table : ref (alloc_table _Queue)) 
-     (_Queue_empty_elem_self_5 : ref (memory _Queue Int32.t)) 
-      (_Queue_curr_elem_self_5 : ref (memory _Queue Int32.t)) 
-       (_Queue_capacity_self_5 : ref (memory _Queue Int32.t)) 
-        (_Queue_array_self_5 : ref (memory _Queue (pointer intP))) 
-         (intP_array_8_alloc_table : (alloc_table intP)) : Int32.t
-          requires { true } reads { _Queue_array_self_5,
-          _Queue_capacity_self_5, _Queue_curr_elem_self_5,
-          _Queue_empty_elem_self_5, _Queue_self_5_alloc_table } writes {
-          _Queue_array_self_5, _Queue_capacity_self_5,
-          _Queue_curr_elem_self_5, _Queue_empty_elem_self_5,
-          _Queue_self_5_alloc_table }
+    (_Queue_self_0_4_alloc_table : ref (alloc_table _Queue)) 
+     (_Queue_empty_elem_self_0_4 : ref (memory _Queue Int32.t)) 
+      (_Queue_curr_elem_self_0_4 : ref (memory _Queue Int32.t)) 
+       (_Queue_capacity_self_0_4 : ref (memory _Queue Int32.t)) 
+        (_Queue_array_self_0_4 : ref (memory _Queue (pointer intP))) 
+         (intP_array_7_alloc_table : (alloc_table intP)) : Int32.t
+          requires { true } reads { _Queue_array_self_0_4,
+          _Queue_capacity_self_0_4, _Queue_curr_elem_self_0_4,
+          _Queue_empty_elem_self_0_4, _Queue_self_0_4_alloc_table } writes {
+          _Queue_array_self_0_4, _Queue_capacity_self_0_4,
+          _Queue_curr_elem_self_0_4, _Queue_empty_elem_self_0_4,
+          _Queue_self_0_4_alloc_table }
           ensures {
-            ((#"queue_h.jc" 107 12 31# "expl:Allocates clause"
-             (#"queue_h.jc" 107 12 31# "expl:Allocates clause"
-             (alloc_same_except (old !_Queue_self_5_alloc_table)
-             !_Queue_self_5_alloc_table pset_empty)))
+            ((#"queue_h.jc" 65 12 33# "expl:Allocates clause"
+             (#"queue_h.jc" 65 12 33# "expl:Allocates clause"
+             (alloc_same_except (old !_Queue_self_0_4_alloc_table)
+             !_Queue_self_0_4_alloc_table pset_empty)))
             /\
-            (((((#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-                (not_assigns (old !_Queue_self_5_alloc_table)
-                !_Queue_self_5_alloc_table (old !_Queue_array_self_5)
-                !_Queue_array_self_5 (pset_singleton self_2)))
+            (((((#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+                (not_assigns (old !_Queue_self_0_4_alloc_table)
+                !_Queue_self_0_4_alloc_table (old !_Queue_array_self_0_4)
+                !_Queue_array_self_0_4 (pset_singleton self_0_0)))
                /\
-               (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-               (not_assigns (old !_Queue_self_5_alloc_table)
-               !_Queue_self_5_alloc_table (old !_Queue_capacity_self_5)
-               !_Queue_capacity_self_5 (pset_singleton self_2))))
+               (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+               (not_assigns (old !_Queue_self_0_4_alloc_table)
+               !_Queue_self_0_4_alloc_table (old !_Queue_capacity_self_0_4)
+               !_Queue_capacity_self_0_4 (pset_singleton self_0_0))))
               /\
-              (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-              (not_assigns (old !_Queue_self_5_alloc_table)
-              !_Queue_self_5_alloc_table (old !_Queue_curr_elem_self_5)
-              !_Queue_curr_elem_self_5 (pset_singleton self_2))))
+              (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+              (not_assigns (old !_Queue_self_0_4_alloc_table)
+              !_Queue_self_0_4_alloc_table (old !_Queue_curr_elem_self_0_4)
+              !_Queue_curr_elem_self_0_4 (pset_singleton self_0_0))))
              /\
-             (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-             (not_assigns (old !_Queue_self_5_alloc_table)
-             !_Queue_self_5_alloc_table (old !_Queue_empty_elem_self_5)
-             !_Queue_empty_elem_self_5 (pset_singleton self_2))))
+             (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+             (not_assigns (old !_Queue_self_0_4_alloc_table)
+             !_Queue_self_0_4_alloc_table (old !_Queue_empty_elem_self_0_4)
+             !_Queue_empty_elem_self_0_4 (pset_singleton self_0_0))))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
@@ -7785,49 +7718,51 @@ module Function_q_init
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 108 40 52# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 66 40 52# "expl:Integer cast"
               (Int32.of_int (0)))) ->
               ((strict_left_valid_struct_intP
-               (select !_Queue_array_self_5 self_2) (0)
-               intP_array_8_alloc_table)
+               (select !_Queue_array_self_0_4 self_0_0) (0)
+               intP_array_7_alloc_table)
               /\
-              (right_valid_struct_intP (select !_Queue_array_self_5 self_2)
-              (Int.(-_) 1) intP_array_8_alloc_table))))
+              (right_valid_struct_intP
+              (select !_Queue_array_self_0_4 self_0_0) (Int.(-_) 1)
+              intP_array_7_alloc_table))))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 34 12 57#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 110 42 54# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 68 42 54# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (fresh_alloc_struct_intP (select !_Queue_array_self_5 self_2)
-              (0) intP_array_8_alloc_table)))
+              (fresh_alloc_struct_intP
+              (select !_Queue_array_self_0_4 self_0_0) (0)
+              intP_array_7_alloc_table)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 35 12 49#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 112 44 56# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 70 44 56# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (is_valid_queue self_2 intP_array_8_alloc_table
-              !_Queue_self_5_alloc_table !_Queue_empty_elem_self_5
-              !_Queue_curr_elem_self_5 !_Queue_capacity_self_5
-              !_Queue_array_self_5)))
+              (is_valid_queue self_0_0 intP_array_7_alloc_table
+              !_Queue_self_0_4_alloc_table !_Queue_empty_elem_self_0_4
+              !_Queue_curr_elem_self_0_4 !_Queue_capacity_self_0_4
+              !_Queue_array_self_0_4)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 36 12 49#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 114 46 58# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 72 46 58# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (is_empty_queue self_2 !_Queue_empty_elem_self_5
-              !_Queue_curr_elem_self_5)))
+              (is_empty_queue self_0_0 !_Queue_empty_elem_self_0_4
+              !_Queue_curr_elem_self_0_4)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 37 12 59#
             "expl:Ensures clause"
-            ((Int32.(=) result (#"queue_h.jc" 116 47 59# "expl:Integer cast"
+            ((Int32.(=) result (#"queue_h.jc" 74 47 59# "expl:Integer cast"
              (Int32.of_int (0)))) ->
-             ((=) (Int32.to_int (select !_Queue_capacity_self_5 self_2))
+             ((=) (Int32.to_int (select !_Queue_capacity_self_0_4 self_0_0))
              (Int.(+) (Int32.to_int max_size) (1)))))))))))))))) }
   
 end
@@ -7865,64 +7800,64 @@ module Function_q_init_safe
   use why3.Bool.Bool 
   
   val q_init
-  (self_2 : (pointer _Queue)) 
+  (self_0_0 : (pointer _Queue)) 
    (max_size : Int32.t) 
-    (_Queue_self_5_alloc_table : ref (alloc_table _Queue)) 
-     (_Queue_empty_elem_self_5 : ref (memory _Queue Int32.t)) 
-      (_Queue_curr_elem_self_5 : ref (memory _Queue Int32.t)) 
-       (_Queue_capacity_self_5 : ref (memory _Queue Int32.t)) 
-        (_Queue_array_self_5 : ref (memory _Queue (pointer intP))) 
-         (intP_array_8_alloc_table : (alloc_table intP)) : Int32.t
+    (_Queue_self_0_4_alloc_table : ref (alloc_table _Queue)) 
+     (_Queue_empty_elem_self_0_4 : ref (memory _Queue Int32.t)) 
+      (_Queue_curr_elem_self_0_4 : ref (memory _Queue Int32.t)) 
+       (_Queue_capacity_self_0_4 : ref (memory _Queue Int32.t)) 
+        (_Queue_array_self_0_4 : ref (memory _Queue (pointer intP))) 
+         (intP_array_7_alloc_table : (alloc_table intP)) : Int32.t
           requires {
             ("expl:External"
-            (#"queue_h.jc" 98 12 243# "expl:Requires clause"
+            (#"queue_h.jc" 56 12 247# "expl:Requires clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 24 13 25#
              "expl:Requires clause"
-             (#"queue_h.jc" 98 12 243# "expl:Requires clause"
-             ((#"queue_h.jc" 98 12 243# "expl:Requires clause"
-              ((<=) (offset_min !_Queue_self_5_alloc_table self_2) (0)))
+             (#"queue_h.jc" 56 12 247# "expl:Requires clause"
+             ((#"queue_h.jc" 56 12 247# "expl:Requires clause"
+              ((<=) (offset_min !_Queue_self_0_4_alloc_table self_0_0) (0)))
              /\
-             (#"queue_h.jc" 98 12 243# "expl:Requires clause"
-             ((#"queue_h.jc" 98 12 243# "expl:Requires clause"
-              ((>=) (offset_max !_Queue_self_5_alloc_table self_2) (0)))
+             (#"queue_h.jc" 56 12 247# "expl:Requires clause"
+             ((#"queue_h.jc" 56 12 247# "expl:Requires clause"
+              ((>=) (offset_max !_Queue_self_0_4_alloc_table self_0_0) (0)))
              /\
-             (#"queue_h.jc" 98 12 243# "expl:Requires clause"
+             (#"queue_h.jc" 56 12 247# "expl:Requires clause"
              ((=) true true)))))))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 25 13 25#
             "expl:Requires clause"
-            (Int32.(>) max_size (#"queue_h.jc" 101 34 46# "expl:Integer cast"
+            (Int32.(>) max_size (#"queue_h.jc" 59 34 46# "expl:Integer cast"
             (Int32.of_int (0)))))))) }
-          reads { _Queue_array_self_5, _Queue_capacity_self_5,
-          _Queue_curr_elem_self_5, _Queue_empty_elem_self_5,
-          _Queue_self_5_alloc_table } writes { _Queue_array_self_5,
-          _Queue_capacity_self_5, _Queue_curr_elem_self_5,
-          _Queue_empty_elem_self_5, _Queue_self_5_alloc_table }
+          reads { _Queue_array_self_0_4, _Queue_capacity_self_0_4,
+          _Queue_curr_elem_self_0_4, _Queue_empty_elem_self_0_4,
+          _Queue_self_0_4_alloc_table } writes { _Queue_array_self_0_4,
+          _Queue_capacity_self_0_4, _Queue_curr_elem_self_0_4,
+          _Queue_empty_elem_self_0_4, _Queue_self_0_4_alloc_table }
           ensures {
-            ((#"queue_h.jc" 107 12 31# "expl:Allocates clause"
-             (#"queue_h.jc" 107 12 31# "expl:Allocates clause"
-             (alloc_same_except (old !_Queue_self_5_alloc_table)
-             !_Queue_self_5_alloc_table pset_empty)))
+            ((#"queue_h.jc" 65 12 33# "expl:Allocates clause"
+             (#"queue_h.jc" 65 12 33# "expl:Allocates clause"
+             (alloc_same_except (old !_Queue_self_0_4_alloc_table)
+             !_Queue_self_0_4_alloc_table pset_empty)))
             /\
-            (((((#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-                (not_assigns (old !_Queue_self_5_alloc_table)
-                !_Queue_self_5_alloc_table (old !_Queue_array_self_5)
-                !_Queue_array_self_5 (pset_singleton self_2)))
+            (((((#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+                (not_assigns (old !_Queue_self_0_4_alloc_table)
+                !_Queue_self_0_4_alloc_table (old !_Queue_array_self_0_4)
+                !_Queue_array_self_0_4 (pset_singleton self_0_0)))
                /\
-               (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-               (not_assigns (old !_Queue_self_5_alloc_table)
-               !_Queue_self_5_alloc_table (old !_Queue_capacity_self_5)
-               !_Queue_capacity_self_5 (pset_singleton self_2))))
+               (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+               (not_assigns (old !_Queue_self_0_4_alloc_table)
+               !_Queue_self_0_4_alloc_table (old !_Queue_capacity_self_0_4)
+               !_Queue_capacity_self_0_4 (pset_singleton self_0_0))))
               /\
-              (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-              (not_assigns (old !_Queue_self_5_alloc_table)
-              !_Queue_self_5_alloc_table (old !_Queue_curr_elem_self_5)
-              !_Queue_curr_elem_self_5 (pset_singleton self_2))))
+              (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+              (not_assigns (old !_Queue_self_0_4_alloc_table)
+              !_Queue_self_0_4_alloc_table (old !_Queue_curr_elem_self_0_4)
+              !_Queue_curr_elem_self_0_4 (pset_singleton self_0_0))))
              /\
-             (#"queue_h.jc" 103 10 74# "expl:Assigns clause"
-             (not_assigns (old !_Queue_self_5_alloc_table)
-             !_Queue_self_5_alloc_table (old !_Queue_empty_elem_self_5)
-             !_Queue_empty_elem_self_5 (pset_singleton self_2))))
+             (#"queue_h.jc" 61 10 82# "expl:Assigns clause"
+             (not_assigns (old !_Queue_self_0_4_alloc_table)
+             !_Queue_self_0_4_alloc_table (old !_Queue_empty_elem_self_0_4)
+             !_Queue_empty_elem_self_0_4 (pset_singleton self_0_0))))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
@@ -7930,49 +7865,236 @@ module Function_q_init_safe
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 108 40 52# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 66 40 52# "expl:Integer cast"
               (Int32.of_int (0)))) ->
               ((strict_left_valid_struct_intP
-               (select !_Queue_array_self_5 self_2) (0)
-               intP_array_8_alloc_table)
+               (select !_Queue_array_self_0_4 self_0_0) (0)
+               intP_array_7_alloc_table)
               /\
-              (right_valid_struct_intP (select !_Queue_array_self_5 self_2)
-              (Int.(-_) 1) intP_array_8_alloc_table))))
+              (right_valid_struct_intP
+              (select !_Queue_array_self_0_4 self_0_0) (Int.(-_) 1)
+              intP_array_7_alloc_table))))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 34 12 57#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 110 42 54# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 68 42 54# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (fresh_alloc_struct_intP (select !_Queue_array_self_5 self_2)
-              (0) intP_array_8_alloc_table)))
+              (fresh_alloc_struct_intP
+              (select !_Queue_array_self_0_4 self_0_0) (0)
+              intP_array_7_alloc_table)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 35 12 49#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 112 44 56# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 70 44 56# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (is_valid_queue self_2 intP_array_8_alloc_table
-              !_Queue_self_5_alloc_table !_Queue_empty_elem_self_5
-              !_Queue_curr_elem_self_5 !_Queue_capacity_self_5
-              !_Queue_array_self_5)))
+              (is_valid_queue self_0_0 intP_array_7_alloc_table
+              !_Queue_self_0_4_alloc_table !_Queue_empty_elem_self_0_4
+              !_Queue_curr_elem_self_0_4 !_Queue_capacity_self_0_4
+              !_Queue_array_self_0_4)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 32 12 51#
             "expl:Ensures clause"
             ((#"/home/nik/Projects/ver/sem_6/queue.h" 36 12 49#
              "expl:Ensures clause"
-             ((Int32.(=) result (#"queue_h.jc" 114 46 58# "expl:Integer cast"
+             ((Int32.(=) result (#"queue_h.jc" 72 46 58# "expl:Integer cast"
               (Int32.of_int (0)))) ->
-              (is_empty_queue self_2 !_Queue_empty_elem_self_5
-              !_Queue_curr_elem_self_5)))
+              (is_empty_queue self_0_0 !_Queue_empty_elem_self_0_4
+              !_Queue_curr_elem_self_0_4)))
             /\
             (#"/home/nik/Projects/ver/sem_6/queue.h" 37 12 59#
             "expl:Ensures clause"
-            ((Int32.(=) result (#"queue_h.jc" 116 47 59# "expl:Integer cast"
+            ((Int32.(=) result (#"queue_h.jc" 74 47 59# "expl:Integer cast"
              (Int32.of_int (0)))) ->
-             ((=) (Int32.to_int (select !_Queue_capacity_self_5 self_2))
+             ((=) (Int32.to_int (select !_Queue_capacity_self_0_4 self_0_0))
              (Int.(+) (Int32.to_int max_size) (1)))))))))))))))) }
+  
+end
+
+module Function_q_clear
+
+  use import Struct_intP 
+  
+  use import core.Same_except 
+  
+  use import Root_intP 
+  
+  use import Root__Queue 
+  
+  use import ref.Ref 
+  
+  use import core.Pset 
+  
+  use import core.Pointer 
+  
+  use import core.Memory 
+  
+  use enum.Int32 
+  
+  use import core.Assigns 
+  
+  use import core.Alloc_table 
+  
+  use why3.Bool.Bool 
+  
+  val q_clear
+  (self_1 : (pointer _Queue)) 
+   (_Queue_self_5_alloc_table : ref (alloc_table _Queue)) 
+    (_Queue_empty_elem_self_5 : ref (memory _Queue Int32.t)) 
+     (_Queue_curr_elem_self_5 : ref (memory _Queue Int32.t)) 
+      (_Queue_capacity_self_5 : ref (memory _Queue Int32.t)) 
+       (_Queue_array_self_5 : ref (memory _Queue (pointer intP))) 
+        (intP_array_8_alloc_table : (alloc_table intP)) : unit
+         requires { true } reads { _Queue_array_self_5,
+         _Queue_capacity_self_5, _Queue_curr_elem_self_5,
+         _Queue_empty_elem_self_5, _Queue_self_5_alloc_table } writes {
+         _Queue_array_self_5, _Queue_capacity_self_5,
+         _Queue_curr_elem_self_5, _Queue_empty_elem_self_5,
+         _Queue_self_5_alloc_table }
+         ensures {
+           ((#"queue_h.jc" 90 12 31# "expl:Allocates clause"
+            (#"queue_h.jc" 90 12 31# "expl:Allocates clause"
+            (alloc_same_except (old !_Queue_self_5_alloc_table)
+            !_Queue_self_5_alloc_table pset_empty)))
+           /\
+           (((((#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+               (not_assigns (old !_Queue_self_5_alloc_table)
+               !_Queue_self_5_alloc_table (old !_Queue_array_self_5)
+               !_Queue_array_self_5 (pset_singleton self_1)))
+              /\
+              (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+              (not_assigns (old !_Queue_self_5_alloc_table)
+              !_Queue_self_5_alloc_table (old !_Queue_capacity_self_5)
+              !_Queue_capacity_self_5 (pset_singleton self_1))))
+             /\
+             (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+             (not_assigns (old !_Queue_self_5_alloc_table)
+             !_Queue_self_5_alloc_table (old !_Queue_curr_elem_self_5)
+             !_Queue_curr_elem_self_5 (pset_singleton self_1))))
+            /\
+            (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+            (not_assigns (old !_Queue_self_5_alloc_table)
+            !_Queue_self_5_alloc_table (old !_Queue_empty_elem_self_5)
+            !_Queue_empty_elem_self_5 (pset_singleton self_1))))
+           /\
+           (#"/home/nik/Projects/ver/sem_6/queue.h" 51 12 45#
+           "expl:Ensures clause"
+           (fresh_alloc_struct_intP
+           (select (old !_Queue_array_self_5) self_1) (0)
+           intP_array_8_alloc_table)))) }
+  
+end
+
+module Function_q_clear_safe
+
+  use import Struct_intP 
+  
+  use import core.Same_except 
+  
+  use import Root_intP 
+  
+  use import Root__Queue 
+  
+  use import ref.Ref 
+  
+  use import core.Pset 
+  
+  use import core.Pointer 
+  
+  use import core.Memory 
+  
+  use import Logic_is_valid_queue 
+  
+  use enum.Int32 
+  
+  use import int.Int 
+  
+  use import core.Assigns 
+  
+  use import core.Alloc_table 
+  
+  use why3.Bool.Bool 
+  
+  val q_clear
+  (self_1 : (pointer _Queue)) 
+   (_Queue_self_5_alloc_table : ref (alloc_table _Queue)) 
+    (_Queue_empty_elem_self_5 : ref (memory _Queue Int32.t)) 
+     (_Queue_curr_elem_self_5 : ref (memory _Queue Int32.t)) 
+      (_Queue_capacity_self_5 : ref (memory _Queue Int32.t)) 
+       (_Queue_array_self_5 : ref (memory _Queue (pointer intP))) 
+        (intP_array_8_alloc_table : (alloc_table intP)) : unit
+         requires {
+           ("expl:External"
+           (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+           ((#"/home/nik/Projects/ver/sem_6/queue.h" 43 13 25#
+            "expl:Requires clause"
+            (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+            ((#"queue_h.jc" 80 12 302# "expl:Requires clause"
+             ((<=) (offset_min !_Queue_self_5_alloc_table self_1) (0)))
+            /\
+            (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+            ((#"queue_h.jc" 80 12 302# "expl:Requires clause"
+             ((>=) (offset_max !_Queue_self_5_alloc_table self_1) (0)))
+            /\
+            (#"queue_h.jc" 80 12 302# "expl:Requires clause" ((=) true true)))))))
+           /\
+           (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+           ((#"/home/nik/Projects/ver/sem_6/queue.h" 44 13 35#
+            "expl:Requires clause"
+            (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+            ((#"queue_h.jc" 80 12 302# "expl:Requires clause"
+             (strict_left_valid_struct_intP
+             (select !_Queue_array_self_5 self_1) (0)
+             intP_array_8_alloc_table))
+            /\
+            (#"queue_h.jc" 80 12 302# "expl:Requires clause"
+            (right_valid_struct_intP (select !_Queue_array_self_5 self_1)
+            (Int.(-_) 1) intP_array_8_alloc_table)))))
+           /\
+           (#"/home/nik/Projects/ver/sem_6/queue.h" 45 13 33#
+           "expl:Requires clause"
+           (is_valid_queue self_1 intP_array_8_alloc_table
+           !_Queue_self_5_alloc_table !_Queue_empty_elem_self_5
+           !_Queue_curr_elem_self_5 !_Queue_capacity_self_5
+           !_Queue_array_self_5))))))) }
+         reads { _Queue_array_self_5, _Queue_capacity_self_5,
+         _Queue_curr_elem_self_5, _Queue_empty_elem_self_5,
+         _Queue_self_5_alloc_table } writes { _Queue_array_self_5,
+         _Queue_capacity_self_5, _Queue_curr_elem_self_5,
+         _Queue_empty_elem_self_5, _Queue_self_5_alloc_table }
+         ensures {
+           ((#"queue_h.jc" 90 12 31# "expl:Allocates clause"
+            (#"queue_h.jc" 90 12 31# "expl:Allocates clause"
+            (alloc_same_except (old !_Queue_self_5_alloc_table)
+            !_Queue_self_5_alloc_table pset_empty)))
+           /\
+           (((((#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+               (not_assigns (old !_Queue_self_5_alloc_table)
+               !_Queue_self_5_alloc_table (old !_Queue_array_self_5)
+               !_Queue_array_self_5 (pset_singleton self_1)))
+              /\
+              (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+              (not_assigns (old !_Queue_self_5_alloc_table)
+              !_Queue_self_5_alloc_table (old !_Queue_capacity_self_5)
+              !_Queue_capacity_self_5 (pset_singleton self_1))))
+             /\
+             (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+             (not_assigns (old !_Queue_self_5_alloc_table)
+             !_Queue_self_5_alloc_table (old !_Queue_curr_elem_self_5)
+             !_Queue_curr_elem_self_5 (pset_singleton self_1))))
+            /\
+            (#"queue_h.jc" 86 10 74# "expl:Assigns clause"
+            (not_assigns (old !_Queue_self_5_alloc_table)
+            !_Queue_self_5_alloc_table (old !_Queue_empty_elem_self_5)
+            !_Queue_empty_elem_self_5 (pset_singleton self_1))))
+           /\
+           (#"/home/nik/Projects/ver/sem_6/queue.h" 51 12 45#
+           "expl:Ensures clause"
+           (fresh_alloc_struct_intP
+           (select (old !_Queue_array_self_5) self_1) (0)
+           intP_array_8_alloc_table)))) }
   
 end

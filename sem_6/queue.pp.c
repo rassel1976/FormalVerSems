@@ -1,10 +1,10 @@
-#include "queue.h"
-#include <stdlib.h>
-#include <limits.h>
+// #include "queue.h"
+// #include <stdlib.h>
+// #include <limits.h>
 
 /*@
-    requires max_size <= INT_MAX - 1;
-*/
+    requires max_size <= 0x7fffffff - 1;*/
+// */
 
 int q_init(struct Queue *self, int max_size) {
 
@@ -18,7 +18,7 @@ int q_init(struct Queue *self, int max_size) {
 
 void q_clear(struct Queue *self) {
     free(self->array);
-    self->array = NULL;
+    self->array = ((void *)0);
 }
 
 int q_add(struct Queue *self, int elem) {
@@ -27,7 +27,7 @@ int q_add(struct Queue *self, int elem) {
     }
 
     self->array[self->empty_elem] = elem;
-    //@ assert get_item(self, queue_size(self)) == elem;
+    /*@ assert get_item(self, queue_size(self)) == elem;*/
 
     self->empty_elem = (self->empty_elem + 1) % self->capacity;
 

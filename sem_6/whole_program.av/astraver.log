@@ -5,23 +5,80 @@ Typing logic labels
 Typing code
 Typing axiomatic Padding
 Typing logic type declaration padding
+Typing axiomatic Memory_reinterpretation_predicates
 Typing axiomatic Padding
+Typing axiomatic Memory_reinterpretation_predicates
 Typing tag voidP
 Typing tag charP
 Typing tag intP
 Typing tag _Queue
 Computation of call graph
 ***********************************
-Logic call graph: has 2 components
+Logic call graph: has 20 components
 ***********************************
 Component 0:
- is_valid_queue calls: 
 
 Component 1:
+ uint8_as_uint32 calls: \uint8_as_uint32
+
+Component 2:
+ complement_to_uint32 calls: 
+
+Component 3:
+
+Component 4:
+ uint8_as_int32 calls: \uint8_as_int32, uint8_as_uint32,
+complement_to_uint32
+
+Component 5:
+
+Component 6:
+ uint32_as_uint8 calls: \uint32_as_uint8
+
+Component 7:
+
+Component 8:
+ int32_as_uint8 calls: \int32_as_uint8, uint32_as_uint8,
+complement_to_uint32
+
+Component 9:
+ complement_to_uint8 calls: 
+
+Component 10:
+
+Component 11:
+ int8_as_int32 calls: \int8_as_int32, uint8_as_int32,
+complement_to_uint8, complement_to_uint8, complement_to_uint8,
+complement_to_uint8
+
+Component 12:
+
+Component 13:
+ int32_as_int8 calls: \int32_as_int8, int32_as_uint8,
+complement_to_uint8, complement_to_uint8, complement_to_uint8,
+complement_to_uint8
+
+Component 14:
+ is_valid_queue calls: 
+
+Component 15:
  is_empty_queue calls: 
 
+Component 16:
+ queue_size calls: 
+
+Component 17:
+ get_item calls: 
+
+Component 18:
+ same_items calls: get_item,
+get_item
+
+Component 19:
+ is_full_queue calls: 
+
 ******************************
-Call graph: has 2 components
+Call graph: has 6 components
 ******************************
 Component 0:
  q_init calls: 
@@ -29,19 +86,148 @@ Component 0:
 Component 1:
  q_clear calls: 
 
+Component 2:
+ q_add calls: 
+
+Component 3:
+ q_is_empty calls: 
+
+Component 4:
+ q_remove calls: q_is_empty
+
+Component 5:
+ test_overflow calls: q_clear, q_add, q_add, q_add,
+q_init
+
 Adding invariants
 Computation of regions
 Separation: treating function q_init
 Separation: treating function q_init
 Separation: treating function q_clear
 Separation: treating function q_clear
+Separation: treating function q_add
+Separation: treating function q_add
+Separation: treating function q_is_empty
+Separation: treating function q_is_empty
+Separation: treating function q_remove
+Separation: treating function q_remove
+Separation: treating function test_overflow
+Separation: treating function test_overflow
 Computation of effects
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function uint8_as_uint32:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a3 at (Here), a2 at (Here), a1 at (Here), a0 at (Here), d0 at (Here)
+
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function complement_to_uint32:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: v at (Here)
+
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function uint8_as_int32:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a0 at (Here), a1 at (Here), a2 at (Here), a3 at (Here), d0 at (Here)
+
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function uint32_as_uint8:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a3 at (Here), a2 at (Here), a1 at (Here), a0 at (Here), d0 at (Here)
+
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function int32_as_uint8:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a0 at (Here), a1 at (Here), a2 at (Here), a3 at (Here), d0 at (Here)
+
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function complement_to_uint8:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: v at (Here)
+
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function int8_as_int32:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a0 at (Here), a1 at (Here), a2 at (Here), a3 at (Here), d0 at (Here)
+
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function int32_as_int8:
+ alloc_table: 
+ tag_table: 
+ memories: 
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: a0 at (Here), a1 at (Here), a2 at (Here), a3 at (Here), d0 at (Here)
+
 Effects: doing one iteration
 Effects: doing one iteration
 Effects: fixpoint reached
 Effects for logic function is_valid_queue:
- alloc_table: (array_6 : alloc-root "intP") at (L),
-              (self_2 : alloc-root "_Queue") at (L)
+ alloc_table: (array_14 : alloc-root "voidP") at (L),
+              (self_2 : alloc-root "voidP") at (L)
  tag_table: 
  memories: (self_2 : mem-field "empty_elem") at (L),
            (self_2 : mem-field "curr_elem") at (L),
@@ -65,6 +251,64 @@ Effects for logic function is_empty_queue:
  globals: 
  locals: self_0 at (Here)
 
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function queue_size:
+ alloc_table: 
+ tag_table: 
+ memories: (self_1_4 : mem-field "empty_elem") at (L),
+           (self_1_4 : mem-field "curr_elem") at (L),
+           (self_1_4 : mem-field "capacity") at (L)
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: self_1 at (Here)
+
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function get_item:
+ alloc_table: 
+ tag_table: 
+ memories: (self_2_5 : mem-field "curr_elem") at (L),
+           (self_2_5 : mem-field "capacity") at (L),
+           (self_2_5 : mem-field "array") at (L),
+           (array_15 : mem-field "intM") at (L)
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: item_number at (Here), self_2 at (Here)
+
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function same_items:
+ alloc_table: 
+ tag_table: 
+ memories: (self_3_6 : mem-field "curr_elem") at (L1, L2),
+           (self_3_6 : mem-field "capacity") at (L1, L2),
+           (self_3_6 : mem-field "array") at (L1, L2),
+           (array_27 : mem-field "intM") at (L1, L2)
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: size at (Here), begin at (Here), self_3 at (Here)
+
+Effects: doing one iteration
+Effects: doing one iteration
+Effects: fixpoint reached
+Effects for logic function is_full_queue:
+ alloc_table: 
+ tag_table: 
+ memories: (self_4_7 : mem-field "empty_elem") at (L),
+           (self_4_7 : mem-field "curr_elem") at (L),
+           (self_4_7 : mem-field "capacity") at (L)
+ raw memories: 
+ precise memories: 
+ globals: 
+ locals: self_4 at (Here)
+
 Effects: doing one iteration...
 all_memories(tag intP):
   Found 0 memories.
@@ -74,6 +318,12 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
 Effects: doing one iteration...
 all_memories(tag intP):
   Found 0 memories.
@@ -83,6 +333,12 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
 Effects: doing one iteration...
 all_memories(tag intP):
   Found 0 memories.
@@ -92,6 +348,12 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
 Effects: doing one iteration...
 all_memories(tag intP):
   Found 0 memories.
@@ -101,34 +363,42 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
 Effects: fixpoint reached
 Effects for function q_init:
- reads:  alloc_table: (array_7 : alloc-root "intP") at (Here, Old),
-                      (self_0_4 : alloc-root "_Queue") at (Here, Old)
+ reads:  alloc_table: (array_16 : alloc-root "voidP") at (Here, Old),
+                      (self_1_8 : alloc-root "voidP") at (Here, Old)
          tag_table: 
-         memories: (self_0_4 : mem-field "empty_elem") at (Here),
-                   (self_0_4 : mem-field "curr_elem") at (Here),
-                   (self_0_4 : mem-field "capacity") at (Here),
-                   (self_0_4 : mem-field "array") at (Here)
-         raw memories: (self_0_4 : mem-field "capacity") at (Here),
-                       (self_0_4 : mem-field "array") at (Here)
+         memories: (self_1_8 : mem-field "empty_elem") at (Here),
+                   (self_1_8 : mem-field "curr_elem") at (Here),
+                   (self_1_8 : mem-field "capacity") at (Here),
+                   (self_1_8 : mem-field "array") at (Here)
+         raw memories: (self_1_8 : mem-field "capacity") at (Here),
+                       (self_1_8 : mem-field "array") at (Here)
          precise memories: 
          globals: 
-         locals: \result at (Here), max_size at (Here), self_0 at (Here)
+         locals: __retres at (Here), \result at (Here), max_size at (Here),
+                 self_1 at (Here)
 
- writes:  alloc_table: (self_0_4 : alloc-root "_Queue") at (Here)
-          tag_table: 
-          memories: (self_0_4 : mem-field "empty_elem") at (Old),
-                    (self_0_4 : mem-field "curr_elem") at (Old),
-                    (self_0_4 : mem-field "capacity") at (Old),
-                    (self_0_4 : mem-field "array") at (Old)
-          raw memories: (self_0_4 : mem-field "empty_elem") at (Old),
-                        (self_0_4 : mem-field "curr_elem") at (Old),
-                        (self_0_4 : mem-field "capacity") at (Old),
-                        (self_0_4 : mem-field "array") at (Old)
+ writes:  alloc_table: (array_16 : alloc-root "voidP") at (Here),
+                       (self_1_8 : alloc-root "voidP") at (Here)
+          tag_table: (array_16 : voidP) at (Here)
+          memories: (self_1_8 : mem-field "empty_elem") at (Here, Old),
+                    (self_1_8 : mem-field "curr_elem") at (Here, Old),
+                    (self_1_8 : mem-field "capacity") at (Here, Old),
+                    (self_1_8 : mem-field "array") at (Here, Old)
+          raw memories: (self_1_8 : mem-field "empty_elem") at (Here, Old),
+                        (self_1_8 : mem-field "curr_elem") at (Here, Old),
+                        (self_1_8 : mem-field "capacity") at (Here, Old),
+                        (self_1_8 : mem-field "array") at (Here, Old)
           precise memories: 
           globals: 
-          locals: 
+          locals: __retres at (Here)
 
  raises: 
 Effects: doing one iteration...
@@ -140,11 +410,6 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
-Effects: doing one iteration...
-all_memories(tag intP):
-  Found 0 memories.
-all_allocs(tag intP):
-  Found 1 allocs.
 all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
@@ -158,7 +423,28 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
 Effects: doing one iteration...
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+Effects: doing one iteration...
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
 all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
@@ -169,31 +455,205 @@ all_allocs(tag intP):
   Found 1 allocs.
 Effects: fixpoint reached
 Effects for function q_clear:
- reads:  alloc_table: (array_8 : alloc-root "intP") at (Here),
-                      (self_5 : alloc-root "_Queue") at (Here, Old)
+ reads:  alloc_table: (array_18 : alloc-root "voidP") at (Here),
+                      (self_0_9 : alloc-root "voidP") at (Here, Old)
          tag_table: 
-         memories: (self_5 : mem-field "empty_elem") at (Here),
-                   (self_5 : mem-field "curr_elem") at (Here),
-                   (self_5 : mem-field "capacity") at (Here),
-                   (self_5 : mem-field "array") at (Here, Old)
-         raw memories: (self_5 : mem-field "array") at (Here, Old)
+         memories: (self_0_9 : mem-field "empty_elem") at (Here),
+                   (self_0_9 : mem-field "curr_elem") at (Here),
+                   (self_0_9 : mem-field "capacity") at (Here),
+                   (self_0_9 : mem-field "array") at (Here, Old)
+         raw memories: (self_0_9 : mem-field "array") at (Here, Old)
          precise memories: 
          globals: 
-         locals: self at (Here)
+         locals: self_0 at (Here)
 
- writes:  alloc_table: (self_5 : alloc-root "_Queue") at (Old)
+ writes:  alloc_table: (array_18 : alloc-root "voidP") at (Here),
+                       (self_0_9 : alloc-root "voidP") at (Old)
           tag_table: 
-          memories: (self_5 : mem-field "empty_elem") at (Old),
-                    (self_5 : mem-field "curr_elem") at (Old),
-                    (self_5 : mem-field "capacity") at (Old),
-                    (self_5 : mem-field "array") at (Old)
-          raw memories: (self_5 : mem-field "empty_elem") at (Old),
-                        (self_5 : mem-field "curr_elem") at (Old),
-                        (self_5 : mem-field "capacity") at (Old),
-                        (self_5 : mem-field "array") at (Old)
+          memories: (self_0_9 : mem-field "empty_elem") at (Old),
+                    (self_0_9 : mem-field "curr_elem") at (Old),
+                    (self_0_9 : mem-field "capacity") at (Old),
+                    (self_0_9 : mem-field "array") at (Here, Old)
+          raw memories: (self_0_9 : mem-field "empty_elem") at (Old),
+                        (self_0_9 : mem-field "curr_elem") at (Old),
+                        (self_0_9 : mem-field "capacity") at (Old),
+                        (self_0_9 : mem-field "array") at (Here, Old)
           precise memories: 
           globals: 
           locals: 
+
+ raises: 
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: fixpoint reached
+Effects for function q_add:
+ reads:  alloc_table: (array_20 : alloc-root "voidP") at (Here, Old),
+                      (self_10 : alloc-root "voidP") at (Here, Old)
+         tag_table: (array_20 : voidP) at (Here)
+         memories: (self_10 : mem-field "empty_elem") at (Here, Old),
+                   (self_10 : mem-field "curr_elem") at (Here, Old),
+                   (self_10 : mem-field "capacity") at (Here, Old),
+                   (self_10 : mem-field "array") at (Here, Old),
+                   (array_20 : mem-field "intM") at (Here, Old)
+         raw memories: (self_10 : mem-field "empty_elem") at (Here),
+                       (self_10 : mem-field "curr_elem") at (Here),
+                       (self_10 : mem-field "capacity") at (Here, Old),
+                       (self_10 : mem-field "array") at (Here)
+         precise memories: 
+         globals: 
+         locals: __retres_0 at (Here), \result at (Here), elem at (Here),
+                 self at (Here)
+
+ writes:  alloc_table: 
+          tag_table: 
+          memories: (self_10 : mem-field "empty_elem") at (Here, Old),
+                    (self_10 : mem-field "curr_elem") at (Old),
+                    (self_10 : mem-field "capacity") at (Old),
+                    (self_10 : mem-field "array") at (Old),
+                    (array_20 : mem-field "intM") at (Here, Old)
+          raw memories: (self_10 : mem-field "empty_elem") at (Here, Old),
+                        (self_10 : mem-field "curr_elem") at (Old),
+                        (self_10 : mem-field "capacity") at (Old),
+                        (self_10 : mem-field "array") at (Old),
+                        (array_20 : mem-field "intM") at (Here, Old)
+          precise memories: 
+          globals: 
+          locals: __retres_0 at (Here)
+
+ raises: 
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: fixpoint reached
+Effects for function q_is_empty:
+ reads:  alloc_table: (self_2_13 : alloc-root "voidP") at (Here)
+         tag_table: 
+         memories: (self_2_13 : mem-field "empty_elem") at (Here),
+                   (self_2_13 : mem-field "curr_elem") at (Here)
+         raw memories: (self_2_13 : mem-field "empty_elem") at (Here),
+                       (self_2_13 : mem-field "curr_elem") at (Here)
+         precise memories: 
+         globals: 
+         locals: __retres_2 at (Here), self_2 at (Here)
+
+ writes:  alloc_table: 
+          tag_table: 
+          memories: 
+          raw memories: 
+          precise memories: 
+          globals: 
+          locals: __retres_2 at (Here)
+
+ raises: 
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: doing one iteration...
+Effects: fixpoint reached
+Effects for function q_remove:
+ reads:  alloc_table: (array_22 : alloc-root "voidP") at (Here),
+                      (elem_0_12 : alloc-root "voidP") at (Here),
+                      (self_3_11 : alloc-root "voidP") at (Here)
+         tag_table: (array_22 : voidP) at (Here)
+         memories: (self_3_11 : mem-field "empty_elem") at (Here),
+                   (self_3_11 : mem-field "curr_elem") at (Here),
+                   (self_3_11 : mem-field "capacity") at (Here),
+                   (self_3_11 : mem-field "array") at (Here),
+                   (array_22 : mem-field "intM") at (Here)
+         raw memories: (self_3_11 : mem-field "empty_elem") at (Here),
+                       (self_3_11 : mem-field "curr_elem") at (Here),
+                       (self_3_11 : mem-field "capacity") at (Here),
+                       (self_3_11 : mem-field "array") at (Here),
+                       (array_22 : mem-field "intM") at (Here)
+         precise memories: 
+         globals: 
+         locals: __retres_1 at (Here), tmp at (Here), elem_0 at (Here),
+                 self_3 at (Here)
+
+ writes:  alloc_table: 
+          tag_table: 
+          memories: (self_3_11 : mem-field "curr_elem") at (Here),
+                    (elem_0_12 : mem-field "intM") at (Here)
+          raw memories: (self_3_11 : mem-field "curr_elem") at (Here),
+                        (elem_0_12 : mem-field "intM") at (Here)
+          precise memories: 
+          globals: 
+          locals: __retres_1 at (Here), tmp at (Here)
+
+ raises: 
+Effects: doing one iteration...
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+Effects: doing one iteration...
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+Effects: doing one iteration...
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+Effects: fixpoint reached
+Effects for function test_overflow:
+ reads:  alloc_table: (null_25 : alloc-root "voidP") at (Here, Old),
+                      (obj_23 : alloc-root "voidP") at (Here, Old)
+         tag_table: (null_25 : voidP) at (Here)
+         memories: (obj_23 : mem-field "empty_elem") at (Here, Old),
+                   (obj_23 : mem-field "curr_elem") at (Here, Old),
+                   (obj_23 : mem-field "capacity") at (Here, Old),
+                   (obj_23 : mem-field "array") at (Here, Old),
+                   (null_25 : mem-field "intM") at (Here, Old)
+         raw memories: (obj_23 : mem-field "empty_elem") at (Here),
+                       (obj_23 : mem-field "curr_elem") at (Here),
+                       (obj_23 : mem-field "capacity") at (Here, Old),
+                       (obj_23 : mem-field "array") at (Here, Old)
+         precise memories: 
+         globals: 
+         locals: __retres_3 at (Here), add3_res at (Here),
+                 add2_res at (Here), add1_res at (Here), obj at (Here),
+                 \result at (Here)
+
+ writes:  alloc_table: (null_25 : alloc-root "voidP") at (Here),
+                       (obj_23 : alloc-root "voidP") at (Here, Old)
+          tag_table: (null_25 : voidP) at (Here), (obj_23 : voidP) at (Here)
+          memories: (obj_23 : mem-field "empty_elem") at (Here, Old),
+                    (obj_23 : mem-field "curr_elem") at (Here, Old),
+                    (obj_23 : mem-field "capacity") at (Here, Old),
+                    (obj_23 : mem-field "array") at (Here, Old),
+                    (null_25 : mem-field "intM") at (Here, Old)
+          raw memories: (obj_23 : mem-field "empty_elem") at (Here, Old),
+                        (obj_23 : mem-field "curr_elem") at (Here, Old),
+                        (obj_23 : mem-field "capacity") at (Here, Old),
+                        (obj_23 : mem-field "array") at (Here, Old),
+                        (null_25 : mem-field "intM") at (Here, Old)
+          precise memories: 
+          globals: 
+          locals: __retres_3 at (Here), add3_res at (Here),
+                  add2_res at (Here), add1_res at (Here), obj at (Here)
 
  raises: 
 Translate logic types
@@ -340,9 +800,17 @@ all_memories(tag _Queue):
   Found 0 memories.
 all_tags(tag _Queue):
   Found 1 tags.
+all_memories(tag voidP):
+  Found 0 memories.
+all_tags(tag voidP):
+  Found 1 tags.
 all_memories(tag _Queue):
   Found 0 memories.
 all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag _Queue):
   Found 0 memories.
@@ -372,21 +840,41 @@ all_memories(tag _Queue):
   Found 0 memories.
 all_allocs(tag _Queue):
   Found 1 allocs.
-all_memories(tag _Queue):
+all_memories(tag voidP):
   Found 0 memories.
-all_allocs(tag _Queue):
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag _Queue):
   Found 0 memories.
 all_allocs(tag _Queue):
   Found 1 allocs.
-all_memories(tag _Queue):
+all_memories(tag voidP):
   Found 0 memories.
-all_allocs(tag _Queue):
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag _Queue):
   Found 0 memories.
 all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
+  Found 1 allocs.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
+  Found 1 allocs.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
   Found 1 allocs.
 all_allocs(tag charP):
   Found 1 allocs.
@@ -748,9 +1236,17 @@ all_memories(tag intP):
   Found 0 memories.
 all_tags(tag intP):
   Found 1 tags.
+all_memories(tag voidP):
+  Found 0 memories.
+all_tags(tag voidP):
+  Found 1 tags.
 all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag intP):
   Found 0 memories.
@@ -780,21 +1276,41 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
-all_memories(tag intP):
+all_memories(tag voidP):
   Found 0 memories.
-all_allocs(tag intP):
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
-all_memories(tag intP):
+all_memories(tag voidP):
   Found 0 memories.
-all_allocs(tag intP):
+all_allocs(tag voidP):
   Found 1 allocs.
 all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag voidP):
+  Found 0 memories.
+all_allocs(tag voidP):
   Found 1 allocs.
 all_allocs(tag voidP):
   Found 1 allocs.
@@ -992,14 +1508,31 @@ Translate exceptions
 Translate enumerated types
 Translate dummies
 Translate standalone logic functions
+Logic function uint8_as_uint32
+Logic function complement_to_uint32
+Logic function uint8_as_int32
+Logic function uint32_as_uint8
+Logic function int32_as_uint8
+Logic function complement_to_uint8
+Logic function int8_as_int32
+Logic function int32_as_int8
 Logic function is_valid_queue
 Logic function is_empty_queue
+Logic function queue_size
+Logic function get_item
+Logic function same_items
+Logic function is_full_queue
 Translate axiomatic declarations
+Axiomatic Memory_reinterpretation_predicates
 Axiomatic Padding
 Translate lemmas
 Translate functions
 Pre-treatement Function q_init
 Pre-treatement Function q_clear
+Pre-treatement Function q_add
+Pre-treatement Function q_remove
+Pre-treatement Function q_is_empty
+Pre-treatement Function test_overflow
 Function q_init
 all_memories(tag intP):
   Found 0 memories.
@@ -1041,6 +1574,18 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_tags(tag intP):
+  Found 1 tags.
+all_memories(tag intP):
+  Found 0 memories.
 Function q_clear
 all_memories(tag intP):
   Found 0 memories.
@@ -1082,4 +1627,72 @@ all_memories(tag intP):
   Found 0 memories.
 all_allocs(tag intP):
   Found 1 allocs.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+all_allocs(tag intP):
+  Found 1 allocs.
+all_memories(tag intP):
+  Found 0 memories.
+Function q_add
+Function q_remove
+Function q_is_empty
+Function test_overflow
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_tags(tag _Queue):
+  Found 1 tags.
+all_memories(tag _Queue):
+  Found 0 memories.
+all_allocs(tag _Queue):
+  Found 1 allocs.
+all_memories(tag _Queue):
+  Found 0 memories.
 Produce makefile

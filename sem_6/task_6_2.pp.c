@@ -1,5 +1,5 @@
-#include "queue.h"
-#include <stdio.h>
+// #include "queue.h"
+// #include <stdio.h>
 
 
 int test_is_empty() {
@@ -88,8 +88,8 @@ int test_underflow() {
 }
 
 /*@
-    ensures \result == 0 || \result == 1;
-*/
+    ensures \result == 0 || \result == 1;*/
+// */
 
 int test_overflow() {
     struct Queue obj;

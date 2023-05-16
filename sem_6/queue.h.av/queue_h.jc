@@ -52,68 +52,41 @@ predicate is_valid_queue{L}(_Queue[..] self) =
 predicate is_empty_queue{L}(_Queue[..] self_0) =
 \at((self_0.curr_elem == self_0.empty_elem),L)
 
-predicate same_items{L1, L2}(_Queue[..] self_1, integer begin, integer size) =
-((\at(\at((if (\at(begin,L1) <= \at(((begin + size) - 1),L1)) then (((\offset_min(
-                                                                    \at(self_1.array,L1)) <=
-                                                                    \at(begin,L1)) &&
-                                                                    (\offset_max(
-                                                                    \at(self_1.array,L1)) >=
-                                                                    \at(
-                                                                    ((begin +
-                                                                    size) -
-                                                                    1),L1))) &&
-                                                                    (\forall integer __framac_tmp4;
-                                                                    (((\at(begin,L1) <=
-                                                                    __framac_tmp4) &&
-                                                                    (__framac_tmp4 <=
-                                                                    \at(
-                                                                    ((begin +
-                                                                    size) -
-                                                                    1),L1))) ==>
-                                                                    true))) else true),L1),L1) &&
-   \at(\at((if (\at(begin,L2) <= \at(((begin + size) - 1),L2)) then (((\offset_min(
-                                                                    \at(self_1.array,L2)) <=
-                                                                    \at(begin,L2)) &&
-                                                                    (\offset_max(
-                                                                    \at(self_1.array,L2)) >=
-                                                                    \at(
-                                                                    ((begin +
-                                                                    size) -
-                                                                    1),L2))) &&
-                                                                    (\forall integer __framac_tmp3;
-                                                                    (((\at(begin,L2) <=
-                                                                    __framac_tmp3) &&
-                                                                    (__framac_tmp3 <=
-                                                                    \at(
-                                                                    ((begin +
-                                                                    size) -
-                                                                    1),L2))) ==>
-                                                                    true))) else true),L2),L2)) &&
-  (\forall integer k_1;
-    (((begin <= k_1) && (k_1 < (begin + size))) ==>
-      (\at((self_1.array + k_1).intM,L1) ==
-        \at((self_1.array + k_1).intM,L2)))))
-
-int32 q_init(_Queue[..] self, int32 max_size)
-  requires ((_C_10 : \at((((\offset_min(\at(self,Here)) <= \at(0,Here)) &&
-                            (\offset_max(\at(self,Here)) >= \at(0,Here))) &&
+int32 q_init(_Queue[..] self_0, int32 max_size)
+  requires ((_C_10 : \at((((\offset_min(\at(self_0,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(self_0,Here)) >= \at(0,Here))) &&
                            true),Here)) &&
              (_C_11 : (max_size > (0 :> int32))));
+behavior default:
+  assigns self_0.array,
+  self_0.capacity,
+  self_0.curr_elem,
+  self_0.empty_elem;
+  allocates \at(self_0,Old).array;
+  ensures (_C_1 : ((_C_2 : ((\result == (0 :> int32)) ==>
+                             \freeable{Here}(\at(self_0,Old).array))) &&
+                    ((_C_4 : ((\result == (0 :> int32)) ==>
+                               \allocable{Old}(\at(self_0,Old).array))) &&
+                      ((_C_6 : ((\result == (0 :> int32)) ==>
+                                 is_valid_queue{Here}(\at(self_0,Old)))) &&
+                        ((_C_8 : ((\result == (0 :> int32)) ==>
+                                   is_empty_queue{Here}(\at(self_0,Old)))) &&
+                          (_C_9 : ((\result == (0 :> int32)) ==>
+                                    ((\at(self_0,Old).capacity :> integer) ==
+                                      ((\at(max_size,Old) :> integer) + 1)))))))));
+;
+
+unit q_clear(_Queue[..] self)
+  requires ((_C_13 : \at((((\offset_min(\at(self,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(self,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             ((_C_14 : \freeable{Here}(self.array)) &&
+               (_C_15 : is_valid_queue{Here}(self))));
 behavior default:
   assigns self.array,
   self.capacity,
   self.curr_elem,
   self.empty_elem;
-  allocates \at(self,Old).array;
-  ensures (_C_1 : ((_C_2 : ((\result == (0 :> int32)) ==>
-                             \freeable{Here}(\at(self,Old).array))) &&
-                    ((_C_4 : ((\result == (0 :> int32)) ==>
-                               \allocable{Old}(\at(self,Old).array))) &&
-                      ((_C_6 : ((\result == (0 :> int32)) ==>
-                                 is_valid_queue{Here}(\at(self,Old)))) &&
-                        ((_C_8 : ((\result == (0 :> int32)) ==>
-                                   is_empty_queue{Here}(\at(self,Old)))) &&
-                          (_C_9 : ((\result == (0 :> int32)) ==>
-                                    ((\at(self,Old).capacity :> integer) ==
-                                      ((\at(max_size,Old) :> integer) + 1)))))))));
+  allocates \at(self.array,Old);
+  ensures (_C_12 : \allocable{Here}(\at(self.array,Old)));
 ;
