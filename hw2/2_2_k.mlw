@@ -1,0 +1,29 @@
+module PrimeNumberSieve
+
+  use import ref.Ref
+  use import set.Fsetint
+  use import set.FsetComprehension
+  use import number.Divisibility
+  use import number.Prime
+
+  function sieve (n: int) (s: set int): set int = filter (\x. not (divides n x)) s
+
+  let primes (m: int): set int
+    requires {m >= 2}
+    ensures { forall n: int. prime n && n < m <-> mem n result }
+ = 
+    let nums = ref (interval 2 m) in
+    let primes = ref empty in
+    while not (is_empty !nums) do
+      invariant { forall n k: int. mem n !nums && 2 <= k && divides k n -> mem k !nums }
+      invariant { forall n: int. prime n && n < m -> mem n (union !nums !primes) }
+      invariant { forall n: int. mem n !primes -> prime n && n < m }
+      invariant { forall n: int. mem n !nums -> 2 <= n < m }
+      variant { cardinal !nums }
+        let p = min_elt !nums in
+        assert { subset (add p (sieve p !nums)) !nums };
+        primes := add p !primes;
+        nums := sieve p !nums;
+    done;
+    !primes
+end

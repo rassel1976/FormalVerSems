@@ -1,0 +1,203 @@
+module SetVer
+
+    use import int.Int
+
+    type set 'a
+
+    constant empty : set 'a
+
+    predicate contains (self : set 'a) (elem : 'a)
+
+    function add (self : set 'a) (elem : 'a) : set 'a
+
+    function rem (self : set 'a) (elem : 'a) : set 'a
+
+    function length (self : set 'a) : int
+
+    predicate is_empty (s: set 'a) = forall x: 'a. not (contains s x)
+    
+    (*predicate is_empty (s : set 'a)*)
+
+    (*predicate subset(s1 s2 : set 'a) = forall x : 'a. contains s1 x -> contains s2 x
+
+    function union (s1 :set 'a) (s2 : set 'a) : set 'a
+
+    axiom union_def:
+        forall s1 s2: set 'a, x: 'a.
+        contains (union s1 s2) x <-> contains s1 x \/ contains s2 x
+    
+    axiom length_subset:
+        forall s1 s2 : set 'a. 
+            subset s1 s2 -> length s1 <= length s2*)
+
+    (*axiom is_empty_p:
+        forall s : set 'a, e : 'a.
+            not (contains s e) <-> is_empty s*)
+
+    axiom length_min:
+        forall s : set 'a.
+            length s >= 0
+    
+    axiom length_empty:
+        forall s: set 'a. 
+            length s = 0 <-> is_empty s
+
+    axiom length_add:
+        forall s : set 'a, e : 'a.
+            not (contains s e) -> length (add s e) = (length s) + 1
+
+    axiom length_remove:
+        forall s : set 'a, e : 'a.
+            contains s e -> length s = 1 + length (rem s e)
+    
+    axiom empty_cont:
+        forall s : set 'a, elem : 'a.
+                (s = empty) ->
+                    (contains s elem) <-> false
+    
+    axiom add_cont:
+        forall s : set 'a, elem : 'a, elem2 : 'a.
+            (((contains (add s elem) elem) = true) && 
+            ((elem <> elem2) -> ((contains (add s elem) elem2) = (contains s elem2))))
+
+    axiom rem_cont:
+        forall s : set 'a, elem : 'a, elem2 : 'a.
+        ((contains (rem s elem) elem) = false) && 
+        ((elem <> elem2) -> ((contains (rem s elem) elem2) = (contains s elem2)))
+    
+    val add (self : set 'a) (elem : 'a) : set 'a
+        ensures {(contains result elem) = true}
+    
+    val rem (self : set 'a) (elem : 'a) : set 'a
+        ensures {(contains result elem) = false}
+    
+    val is_empty (self : set 'a) : bool
+        ensures {result = is_empty self}
+    
+    val length (self : set 'a) : int
+        ensures {result = length self}
+    
+    (*val subset (s1 : set 'a) (s2 : set 'a) : bool
+        ensures {result = subset s1 s2}
+    
+    val union (s1 : set 'a) (s2 : set 'a) : set 'a
+        ensures {result = union s1 s2}*)
+
+end
+
+module SetInt
+    use import SetVer
+    use import int.Int
+    use import ref.Ref
+
+    function min_elt (self : set int) : int
+
+    axiom min_elt_def1:
+        forall s: set int. 
+            not (is_empty s) -> contains s (min_elt s)
+    
+    axiom min_elt_def2:
+        forall s: set int, e: int. 
+            contains s e -> min_elt s <= e
+
+    let interval (beg : int) (end1 : int) : set int
+        requires {beg <= end1}
+        ensures {forall e : int. contains result e -> beg <= e < end1}
+    =
+        let res = ref empty in
+        let i = ref beg in
+        while !i < end1 do
+            invariant {forall e : int. contains !res e -> beg <= e < !i}
+            variant {(end1 - !i)}
+            res := add !res !i;
+            i := !i + 1;
+        done;
+        !res
+    
+        (* инициализация изначального сета от a до b включительно *)
+    let init_set (b : int) : set int
+        requires { 2 <= b }
+        ensures {forall k : int. (contains result k) <-> 2 <= k < b }
+    =
+        let res = ref empty in
+        let i = ref 2 in
+        while !i < b do
+            variant { b - !i }
+            invariant { forall k : int. ((contains !res k) <-> 2 <= k < !i) || (is_empty !res)}
+            (* invariant {forall k : int. 2 <= k <= !i <-> (has_elem !res k)} *)
+            res := (add !res !i);
+            i := !i + 1;
+        done;
+        !res
+    
+    val min_elt (self : set int) : int
+        ensures {result = min_elt self} 
+end
+
+module Erat
+    use import int.Int
+    use import SetVer
+    use import SetInt
+    use import ref.Ref
+    use import number.Divisibility
+    use import number.Prime
+
+    (*function sieve (self : set int) (n : int) : set int
+
+    axiom sieve_def:
+        forall s : set int, e : int, n : int.
+            contains (sieve s n) e <-> ((not (divides n e)) && contains s e)
+
+    lemma sieve_length:
+        forall s : set int, n : int.
+            length (sieve s n) <= length s*)
+    
+    (*val sieve (self : set int) (n : int) : set int
+        ensures {result = sieve self n}*)
+
+   (* просеивание числа через все множество all_nums *)
+    let sieve (all_nums : set int) (primes : set int) (prime_number : int) (n : int)  : set int
+        (* только простое число на входе *)
+        requires { (prime prime_number) }
+
+        (* простое число не находится в множестве primes *)
+        requires { not (contains primes prime_number) }
+
+        (* если k делится на входное простое число, то его нет в итоговом множестве *)
+        ensures { forall k : int. ((divides prime_number k) && (prime_number <= k <= n)) -> (not (contains result k)) }
+    =
+        let res = ref all_nums in
+        let i = ref prime_number in
+        while !i <= n do
+            variant {n - !i}
+            (* для всех k от простого до текущей итерации, которые делятся на простое число - должны быть уже удалены*)
+            invariant {forall k : int. (prime_number <= k < !i) && (divides prime_number k) -> (not (contains !res k))} 
+
+            (* если найдется такое число i, которое делится на входное простое число, то удаляем его из множества *)
+            if (contains !res !i) && (divides prime_number !i) then 
+                res := rem !res !i;
+            i := !i + 1
+        done;
+        !res
+
+    (*let erat (n: int): set int
+        requires {n >= 2}
+        ensures { forall m: int. prime m && m <= n <-> contains result m }
+        ensures { forall m: int. not (prime m) && m <= n <-> not (contains result m) }
+    = 
+        let nums = ref (interval 2 n) in
+        let primes = ref empty in
+        while not (is_empty !nums) do
+            invariant { forall m k: int. contains !nums m && 2 <= k && divides k m -> contains !nums k }
+            invariant { forall m: int. prime m && m <= n -> contains (union !nums !primes) m }
+            invariant { forall m: int. contains !primes m -> prime m && m <= n }
+            invariant { forall m: int. contains !nums m -> 2 <= m <= n }
+            variant { length !nums }
+
+            let p = min_elt !nums in
+            (*assert { subset (add (sieve !nums p) p) !nums };*)
+            nums := sieve !nums !primes p n;
+            primes := add !primes p;
+        done;
+        !primes*)
+end

@@ -1,0 +1,16 @@
+module Task21
+    use import int.Int
+    use import int.EuclideanDivision
+
+    function pow(x n:int): int
+        (*= if n = 0 then 1 else x * (pow x (n-1))*)
+    
+    axiom pow_def:
+        forall x n : int.
+            if n = 0 then (pow x n) = 1 else (x * (pow x (n-1))) = (pow x n)
+ 
+    let rec p (n: int) : bool
+        requires { n >= 0 }
+        ensures { result <-> (mod ((pow 2 (3*n)) - (pow 3 n)) 5 = 0)}
+    = if n = 0 then (mod 0 5 = 0) else p (n-1)
+end

@@ -1,0 +1,417 @@
+
+axiomatic Padding {
+
+  logic type padding
+  
+}
+
+tag voidP = {
+}
+
+type voidP = [voidP]
+
+tag charP = voidP with {
+  int8 charM: 8;
+}
+
+tag __anonstruct_Key_2 = {
+  int32 a: 32; 
+  int32 b: 32;
+}
+
+type __anonstruct_Key_2 = [__anonstruct_Key_2]
+
+tag __anonstruct_Value_3 = {
+  int32 c: 32; 
+  int32 d: 32;
+}
+
+type __anonstruct_Value_3 = [__anonstruct_Value_3]
+
+tag __anonstruct_Item_4 = {
+  __anonstruct_Key_2[0] key_1: 64; 
+  __anonstruct_Value_3[0] value_1: 64; 
+  int32 existent: 32;
+}
+
+type __anonstruct_Item_4 = [__anonstruct_Item_4]
+
+tag __anonstruct_Map_5 = {
+  __anonstruct_Item_4[..] items: 64; 
+  int32 capacity: 32; 
+  int32 count: 32;
+}
+
+type __anonstruct_Map_5 = [__anonstruct_Map_5]
+
+axiomatic MapCount {
+
+  logic integer count{L}(__anonstruct_Map_5[..] map, integer m, integer n_1)
+   
+  axiom count_zero{L} :
+  (_C_1 : (\forall __anonstruct_Map_5[..] map_0;
+            (\forall integer m_0;
+              (\forall integer n_2;
+                ((m_0 >= n_2) ==> (count{L}(map_0, m_0, n_2) == 0))))))
+   
+  predicate count_one_p{L}(__anonstruct_Map_5[..] map_1, integer m_1) =
+  (count{L}(map_1, m_1, (m_1 + 1)) ==
+    (if (((map_1.items + m_1).existent :> integer) != 0) then 1 else 0))
+   
+  axiom count_one{L} :
+  (_C_2 : (\forall __anonstruct_Map_5[..] map_2;
+            (\forall integer m_2;
+              count_one_p{L}(map_2, m_2))))
+   
+  predicate count_split_p{L}(__anonstruct_Map_5[..] map_3, integer m_3,
+                             integer n_3, integer k_1) =
+  (count{L}(map_3, m_3, k_1) ==
+    (count{L}(map_3, m_3, n_3) + count{L}(map_3, n_3, k_1)))
+   
+  axiom count_split{L} :
+  (_C_3 : (\forall __anonstruct_Map_5[..] map_4;
+            (\forall integer m_4;
+              (\forall integer n_4;
+                (\forall integer k_2;
+                  (((m_4 <= n_4) && (n_4 <= k_2)) ==>
+                    count_split_p{L}(map_4, m_4, n_4, k_2)))))))
+   
+  logic integer count_exist{L}(__anonstruct_Map_5[..] map_5) =
+  \at(count{L}(map_5, 0, (map_5.capacity :> integer)),L)
+  
+}
+
+predicate is_valid_map_mem{L}(__anonstruct_Map_5[..] map_6) =
+\at((((\at((((\offset_min(\at(map_6,L)) <= \at(0,L)) &&
+              (\offset_max(\at(map_6,L)) >= \at(0,L))) &&
+             true),L) &&
+        (\at(\offset_max(\at(map_6.items,L)),L) ==
+          ((map_6.capacity :> integer) - 1))) &&
+       (! \at((((\offset_min(\at(map_6.items,L)) <=
+                  \at((map_6.capacity :> integer),L)) &&
+                 (\offset_max(\at(map_6.items,L)) >=
+                   \at((map_6.capacity :> integer),L))) &&
+                (\forall integer __framac_tmp4;
+                  (((\at((map_6.capacity :> integer),L) <= __framac_tmp4) &&
+                     (__framac_tmp4 <= \at((map_6.capacity :> integer),L))) ==>
+                    ((((\offset_min(\at((map_6.items + __framac_tmp4).key_1,L)) <=
+                         \at(0,L)) &&
+                        (\offset_max(\at((map_6.items + __framac_tmp4).key_1,L)) >=
+                          \at(0,L))) &&
+                       true) &&
+                      (((\offset_min(\at((map_6.items + __framac_tmp4).value_1,L)) <=
+                          \at(0,L)) &&
+                         (\offset_max(\at((map_6.items + __framac_tmp4).value_1,L)) >=
+                           \at(0,L))) &&
+                        true))))),L))) &&
+      \at((if (\at(0,L) <= \at(((map_6.capacity :> integer) - 1),L)) then 
+          (((\offset_min(\at(map_6.items,L)) <= \at(0,L)) &&
+             (\offset_max(\at(map_6.items,L)) >=
+               \at(((map_6.capacity :> integer) - 1),L))) &&
+            (\forall integer __framac_tmp1;
+              (((\at(0,L) <= __framac_tmp1) &&
+                 (__framac_tmp1 <= \at(((map_6.capacity :> integer) - 1),L))) ==>
+                ((((\offset_min(\at((map_6.items + __framac_tmp1).key_1,L)) <=
+                     \at(0,L)) &&
+                    (\offset_max(\at((map_6.items + __framac_tmp1).key_1,L)) >=
+                      \at(0,L))) &&
+                   true) &&
+                  (((\offset_min(\at((map_6.items + __framac_tmp1).value_1,L)) <=
+                      \at(0,L)) &&
+                     (\offset_max(\at((map_6.items + __framac_tmp1).value_1,L)) >=
+                       \at(0,L))) &&
+                    true))))) else true),L)),L)
+
+predicate is_valid_map_sizes{L}(__anonstruct_Map_5[..] map_7) =
+\at(((((0 :> int32) <= map_7.count) && (map_7.count <= map_7.capacity)) &&
+      (map_7.capacity <= (0x7fffffff :> int32))),L)
+
+predicate begin_ok{L}(__anonstruct_Map_5[..] map_8) =
+\at(((map_8.count > (0 :> int32)) ==>
+      ((map_8.items + 0).existent == (1 :> int32))),L)
+
+predicate is_valid_item{L}(__anonstruct_Map_5[..] map_9, integer idx) =
+\at((((0 <= idx) && (idx < (map_9.capacity :> integer))) ==>
+      (((0 :> int32) <= (map_9.items + idx).existent) &&
+        ((map_9.items + idx).existent <= (1 :> int32)))),L)
+
+predicate count_ok{L}(__anonstruct_Map_5[..] map_10) =
+\at((count_exist{L}(map_10) == (map_10.count :> integer)),L)
+
+predicate gap_ok{L}(__anonstruct_Map_5[..] map_11) =
+\at((\forall integer i;
+      (\forall integer j;
+        ((((((((i + 1) < j) && (j < (map_11.capacity :> integer))) &&
+              (0 <= i)) &&
+             (i < ((map_11.capacity :> integer) - 1))) &&
+            ((map_11.items + i).existent == (0 :> int32))) &&
+           ((map_11.items + (i + 1)).existent == (0 :> int32))) ==>
+          ((map_11.items + j).existent == (0 :> int32))))),L)
+
+predicate is_valid_items{L}(__anonstruct_Map_5[..] map_12) =
+\at((\forall integer i_0;
+      (((0 <= i_0) && (i_0 < (map_12.capacity :> integer))) ==>
+        is_valid_item{L}(map_12, i_0))),L)
+
+predicate compare_keys{L1, L2}(__anonstruct_Key_2[..] k1,
+                               __anonstruct_Key_2[..] k2) =
+((\at(k1.a,L1) == \at(k2.a,L2)) && (\at(k1.b,L1) == \at(k2.b,L2)))
+
+predicate compare_values{L1, L2}(__anonstruct_Value_3[..] v1,
+                                 __anonstruct_Value_3[..] v2) =
+((\at(v1.c,L1) == \at(v2.c,L2)) && (\at(v1.d,L1) == \at(v2.d,L2)))
+
+predicate compare_keys_now{L}(__anonstruct_Key_2[..] k1_0,
+                              __anonstruct_Key_2[..] k2_0) =
+compare_keys{L, L}(k1_0, k2_0)
+
+predicate compare_values_now{L}(__anonstruct_Value_3[..] v1_0,
+                                __anonstruct_Value_3[..] v2_0) =
+compare_values{L, L}(v1_0, v2_0)
+
+predicate valid_existence{L}(__anonstruct_Item_4[..] it) =
+\at((((0 :> int32) <= it.existent) && (it.existent <= (1 :> int32))),L)
+
+predicate item_exists_t{L}(__anonstruct_Item_4[..] it_0) =
+(\at(it_0.existent,L) == (1 :> int32))
+
+logic __anonstruct_Key_2[..] get_key_t{L}(__anonstruct_Item_4[..] it_1) =
+\at(it_1.key_1,L)
+
+logic __anonstruct_Value_3[..] get_value_t{L}(__anonstruct_Item_4[..] it_2) =
+\at(it_2.value_1,L)
+
+logic __anonstruct_Item_4[..] get_item_t{L}(__anonstruct_Map_5[..] map_13,
+                                            integer idx_0) =
+\at((map_13.items + idx_0),L)
+
+predicate all_valid_existence{L}(__anonstruct_Map_5[..] map_14) =
+\at((\forall integer i_1;
+      (((0 <= i_1) && (i_1 <= (map_14.capacity :> integer))) ==>
+        valid_existence{L}(get_item_t{L}(map_14, i_1)))),L)
+
+predicate unique_keys{L}(__anonstruct_Map_5[..] map_15) =
+\at((\forall integer i_2;
+      (\forall integer j_0;
+        (((((((0 <= i_2) && (i_2 < (map_15.capacity :> integer))) &&
+              ((map_15.capacity :> integer) > j_0)) &&
+             (j_0 > i_2)) &&
+            item_exists_t{L}(get_item_t{L}(map_15, i_2))) &&
+           item_exists_t{L}(get_item_t{L}(map_15, j_0))) ==>
+          (! compare_keys_now{L}(get_key_t{L}(get_item_t{L}(map_15, i_2)),
+                                 get_key_t{L}(get_item_t{L}(map_15, j_0))))))),L)
+
+predicate compare_items{L1, L2}(__anonstruct_Item_4[..] i1,
+                                __anonstruct_Item_4[..] i2) =
+(compare_keys{L1,
+  L2}(\at(i1.key_1,L1), \at(i2.key_1,L2)) &&
+  compare_values{L1,
+  L2}(\at(i1.value_1,L1), \at(i2.value_1,L2)))
+
+predicate count_lowers{L1, L2}(__anonstruct_Map_5[..] map_16) =
+((\at(map_16.count,L1) :> integer) ==
+  ((\at(map_16.count,L2) :> integer) + 1))
+
+predicate same_count{L1, L2}(__anonstruct_Map_5[..] map_17) =
+(\at(map_17.count,L1) == \at(map_17.count,L2))
+
+predicate same_capacity{L1, L2}(__anonstruct_Map_5[..] map_18) =
+(\at(map_18.capacity,L1) == \at(map_18.capacity,L2))
+
+predicate same_items{L1, L2}(__anonstruct_Map_5[..] map_19) =
+(\forall integer i_3;
+  (((((0 <= i_3) && (i_3 < (\at(map_19.capacity,L2) :> integer))) &&
+      item_exists_t{L1}(get_item_t{L1}(map_19, i_3))) &&
+     item_exists_t{L2}(get_item_t{L2}(map_19, i_3))) ==>
+    compare_items{L1,
+    L2}(\at((map_19.items + i_3),L1), \at((map_19.items + i_3),L2))))
+
+predicate no_mchg{L1, L2}(__anonstruct_Map_5[..] map_20,
+                          __anonstruct_Key_2[..] key) =
+(\forall integer i_4;
+  (((((0 <= i_4) && (i_4 < (\at(map_20.capacity,L1) :> integer))) &&
+      item_exists_t{L1}(get_item_t{L1}(map_20, i_4))) &&
+     (! compare_keys{L1,
+     L1}(key, get_key_t{L1}(get_item_t{L1}(map_20, i_4))))) ==>
+    (\exists integer j_1;
+      ((((0 <= j_1) && (j_1 < (\at(map_20.capacity,L2) :> integer))) &&
+         item_exists_t{L2}(get_item_t{L2}(map_20, j_1))) ==>
+        compare_items{L1,
+        L2}(get_item_t{L1}(map_20, i_4), get_item_t{L2}(map_20, j_1))))))
+
+predicate no_new{L1, L2}(__anonstruct_Map_5[..] map_21) =
+(\forall integer i_5;
+  ((((0 <= i_5) && (i_5 < (\at(map_21.capacity,L2) :> integer))) &&
+     item_exists_t{L2}(get_item_t{L2}(map_21, i_5))) ==>
+    (\exists integer j_2;
+      ((((0 <= j_2) && (j_2 <= (\at(map_21.capacity,L1) :> integer))) &&
+         item_exists_t{L1}(get_item_t{L1}(map_21, j_2))) ==>
+        compare_items{L1,
+        L2}(get_item_t{L2}(map_21, i_5), get_item_t{L1}(map_21, j_2))))))
+
+predicate is_valid_map{L}(__anonstruct_Map_5[..] map_22) =
+\at((((((((is_valid_map_mem{L}(map_22) && is_valid_map_sizes{L}(map_22)) &&
+           is_valid_items{L}(map_22)) &&
+          count_ok{L}(map_22)) &&
+         begin_ok{L}(map_22)) &&
+        unique_keys{L}(map_22)) &&
+       all_valid_existence{L}(map_22)) &&
+      gap_ok{L}(map_22)),L)
+
+int32 initializeMap(__anonstruct_Map_5[..] map_1, int32 size)
+  requires ((_C_17 : \at((((\offset_min(\at(map_1,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(map_1,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             (_C_18 : (size >= (0 :> int32))));
+behavior default:
+  assigns map_1.items,
+  map_1.capacity,
+  map_1.count;
+  allocates \at(map_1,Old).items;
+  ensures (_C_4 : ((_C_5 : ((\result == (0 :> int32)) ==>
+                             (\at(\offset_max(\at(\at(map_1,Old).items,Here)),Here) ==
+                               ((\at(size,Old) :> integer) - 1)))) &&
+                    ((_C_7 : ((\result == (0 :> int32)) ==>
+                               \freeable{Here}(\at(map_1,Old).items))) &&
+                      ((_C_9 : ((\result == (0 :> int32)) ==>
+                                 (\at(map_1,Old).capacity == \at(size,Old)))) &&
+                        ((_C_11 : ((\result == (0 :> int32)) ==>
+                                    (\at(map_1,Old).count == (0 :> int32)))) &&
+                          ((_C_13 : ((\result == (0 :> int32)) ==>
+                                      is_valid_map{Here}(\at(map_1,Old)))) &&
+                            ((_C_15 : ((\result == (0 :> int32)) ==>
+                                        (\forall integer i_6;
+                                          (((0 <= i_6) &&
+                                             (i_6 <
+                                               (\at(map_1,Old).capacity :> integer))) ==>
+                                            ((\at(map_1,Old).items + i_6).existent ==
+                                              (0 :> int32)))))) &&
+                              (_C_16 : ((\result == (0 :> int32)) ==>
+                                         \allocable{Old}(\at(map_1,Old).items))))))))));
+;
+
+int32 addElement(__anonstruct_Map_5[..] map, __anonstruct_Key_2[..] key,
+                 __anonstruct_Value_3[..] value)
+  requires ((_C_28 : (((_C_30 : \at((((\offset_min(\at(map,Here)) <=
+                                        \at(0,Here)) &&
+                                       (\offset_max(\at(map,Here)) >=
+                                         \at(0,Here))) &&
+                                      true),Here)) &&
+                        (_C_31 : \at((((\offset_min(\at(key,Here)) <=
+                                         \at(0,Here)) &&
+                                        (\offset_max(\at(key,Here)) >=
+                                          \at(0,Here))) &&
+                                       true),Here))) &&
+                       (_C_32 : \at((((\offset_min(\at(value,Here)) <=
+                                        \at(0,Here)) &&
+                                       (\offset_max(\at(value,Here)) >=
+                                         \at(0,Here))) &&
+                                      true),Here)))) &&
+             (_C_33 : is_valid_map{Here}(map)));
+behavior default:
+  assigns map.items;
+  allocates \nothing;
+  ensures (_C_19 : ((_C_20 : is_valid_map{Here}(\at(map,Old))) &&
+                     ((_C_22 : same_capacity{Old, Here}(\at(map,Old))) &&
+                       ((_C_24 : ((\result == (1 :> int32)) ==>
+                                   ((\exists integer i_7;
+                                      (((0 <= i_7) &&
+                                         (i_7 <
+                                           (\at(map,Old).capacity :> integer))) ==>
+                                        ((compare_keys{Old,
+                                           Here}(get_key_t{Old}(get_item_t{Old}(
+                                                                \at(map,Old),
+                                                                i_7)),
+                                                 \at(key,Old)) &&
+                                           compare_values{Here,
+                                           Here}(get_value_t{Here}(get_item_t{Here}(
+                                                                   \at(map,Old),
+                                                                   i_7)),
+                                                 \at(value,Old))) &&
+                                          same_count{Old,
+                                          Here}(\at(map,Old))))) ||
+                                     (\exists integer i_8;
+                                       (((0 <= i_8) &&
+                                          (i_8 <
+                                            (\at(map,Old).capacity :> integer))) ==>
+                                         ((compare_keys{Here,
+                                            Here}(get_key_t{Here}(get_item_t{Here}(
+                                                                  \at(map,Old),
+                                                                  i_8)),
+                                                  \at(key,Old)) &&
+                                            compare_values{Here,
+                                            Here}(get_value_t{Here}(get_item_t{Here}(
+                                                                    \at(map,Old),
+                                                                    i_8)),
+                                                  \at(value,Old))) &&
+                                           ((\at(map,Old).count :> integer) ==
+                                             ((\at(map.count,Old) :> integer) +
+                                               1)))))))) &&
+                         ((_C_26 : ((\result == (1 :> int32)) ==>
+                                     no_mchg{Old,
+                                     Here}(\at(map,Old), \at(key,Old)))) &&
+                           (_C_27 : ((\result == (0 :> int32)) ==>
+                                      (\at(map.count,Old) ==
+                                        \at(map.capacity,Old)))))))));
+;
+
+int32 getElement(__anonstruct_Map_5[..] map_0, __anonstruct_Key_2[..] key_0,
+                 __anonstruct_Value_3[..] value_0)
+  requires ((_C_51 : is_valid_map{Here}(map_0)) &&
+             ((_C_52 : \at((((\offset_min(\at(key_0,Here)) <= \at(0,Here)) &&
+                              (\offset_max(\at(key_0,Here)) >= \at(0,Here))) &&
+                             true),Here)) &&
+               (_C_53 : \at((((\offset_min(\at(value_0,Here)) <= \at(0,Here)) &&
+                               (\offset_max(\at(value_0,Here)) >=
+                                 \at(0,Here))) &&
+                              true),Here))));
+behavior default:
+  assigns value_0.c,
+  value_0.d;
+  allocates \nothing;
+  ensures (_C_34 : ((_C_35 : is_valid_map{Here}(\at(map_0,Old))) &&
+                     ((_C_37 : same_capacity{Old, Here}(\at(map_0,Old))) &&
+                       ((_C_39 : same_count{Old, Here}(\at(map_0,Old))) &&
+                         ((_C_41 : same_items{Old, Here}(\at(map_0,Old))) &&
+                           ((_C_43 : compare_keys{Old,
+                            Here}(\at(key_0,Old), \at(key_0,Old))) &&
+                             ((_C_45 : \at(\at((((\offset_min(\at(key_0,Old)) <=
+                                                   \at(0,Old)) &&
+                                                  (\offset_max(\at(key_0,Old)) >=
+                                                    \at(0,Old))) &&
+                                                 true),Here),Old)) &&
+                               ((_C_47 : \at(\at((((\offset_min(\at(value_0,Old)) <=
+                                                     \at(0,Old)) &&
+                                                    (\offset_max(\at(value_0,Old)) >=
+                                                      \at(0,Old))) &&
+                                                   true),Here),Old)) &&
+                                 ((_C_49 : ((\result == (1 :> int32)) ==>
+                                             (\exists integer i_9;
+                                               ((((0 <= i_9) &&
+                                                   (i_9 <
+                                                     (\at(map_0,Old).capacity :> integer))) &&
+                                                  compare_keys{Here,
+                                                  Here}(\at(key_0,Old),
+                                                        get_key_t{Here}(
+                                                        get_item_t{Here}(
+                                                        \at(map_0,Old), i_9)))) &&
+                                                 compare_values{Here,
+                                                 Here}(\at(value_0,Old),
+                                                       get_value_t{Here}(
+                                                       get_item_t{Here}(
+                                                       \at(map_0,Old), i_9))))))) &&
+                                   (_C_50 : ((\result == (0 :> int32)) ==>
+                                              (compare_values{Old,
+                                                Here}(\at(value_0,Old),
+                                                      \at(value_0,Old)) &&
+                                                (\forall integer i_10;
+                                                  (((0 <= i_10) &&
+                                                     (i_10 <
+                                                       (\at(map_0,Old).capacity :> integer))) ==>
+                                                    (! compare_keys{Here,
+                                                    Here}(\at(key_0,Old),
+                                                          get_key_t{Here}(
+                                                          get_item_t{Here}(
+                                                          \at(map_0,Old),
+                                                          i_10))))))))))))))))));
+;

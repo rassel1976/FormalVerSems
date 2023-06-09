@@ -1,0 +1,1115 @@
+
+axiomatic Padding {
+
+  logic type padding
+  
+}
+
+tag voidP = {
+}
+
+type voidP = [voidP]
+
+tag charP = voidP with {
+  int8 charM: 8;
+}
+
+tag __anonstruct_Key_2 = {
+  int32 a: 32; 
+  int32 b: 32;
+}
+
+type __anonstruct_Key_2 = [__anonstruct_Key_2]
+
+tag __anonstruct_Value_3 = {
+  int32 c: 32; 
+  int32 d: 32;
+}
+
+type __anonstruct_Value_3 = [__anonstruct_Value_3]
+
+tag __anonstruct_Item_4 = voidP with {
+  __anonstruct_Key_2[0] key_2: 64; 
+  __anonstruct_Value_3[0] value_2: 64; 
+  int32 existent: 32;
+}
+
+tag __anonstruct_Map_5 = {
+  __anonstruct_Item_4[..] items: 64; 
+  int32 capacity: 32; 
+  int32 count: 32;
+}
+
+type __anonstruct_Map_5 = [__anonstruct_Map_5]
+
+axiomatic MapCount {
+
+  logic integer count{L}(__anonstruct_Map_5[..] map, integer m, integer n_1)
+   
+  axiom count_zero{L} :
+  (_C_1 : (\forall __anonstruct_Map_5[..] map_0;
+            (\forall integer m_0;
+              (\forall integer n_2;
+                ((m_0 >= n_2) ==> (count{L}(map_0, m_0, n_2) == 0))))))
+   
+  predicate count_one_p{L}(__anonstruct_Map_5[..] map_1, integer m_1,
+                           integer n_3) =
+  ((n_3 == (m_1 + 1)) ==>
+    (count{L}(map_1, m_1, n_3) ==
+      (if (((map_1.items + m_1).existent :> integer) != 0) then 1 else 0)))
+   
+  axiom count_one{L} :
+  (_C_2 : (\forall __anonstruct_Map_5[..] map_2;
+            (\forall integer m_2;
+              count_one_p{L}(map_2, m_2, (m_2 + 1)))))
+   
+  predicate count_split_p{L}(__anonstruct_Map_5[..] map_3, integer m_3,
+                             integer n_4, integer k_1) =
+  (count{L}(map_3, m_3, k_1) ==
+    (count{L}(map_3, m_3, n_4) + count{L}(map_3, n_4, k_1)))
+   
+  axiom count_split{L} :
+  (_C_3 : (\forall __anonstruct_Map_5[..] map_4;
+            (\forall integer m_4;
+              (\forall integer n_5;
+                (\forall integer k_2;
+                  (((m_4 <= n_5) && (n_5 <= k_2)) ==>
+                    count_split_p{L}(map_4, m_4, n_5, k_2)))))))
+   
+  logic integer count_exist{L}(__anonstruct_Map_5[..] map_5) =
+  \at(count{L}(map_5, 0, (map_5.capacity :> integer)),L)
+  
+}
+
+axiomatic CountLem {
+
+  lemma l_count_split{L} :
+  (_C_4 : (\forall __anonstruct_Map_5[..] map_6;
+            (\forall integer i;
+              (((is_valid_map{L}(map_6) && (0 < i)) &&
+                 (i < (map_6.capacity :> integer))) ==>
+                (count{L}(map_6, 0, i) ==
+                  (count{L}(map_6, 0, (i - 1)) + count{L}(map_6, (i - 1), i)))))))
+   
+  lemma l_count_split2{L} :
+  (_C_5 : (\forall __anonstruct_Map_5[..] map_7;
+            (\forall integer i_0;
+              (\forall integer j;
+                ((((is_valid_map{L}(map_7) && (0 < i_0)) && (i_0 < j)) &&
+                   (j < (map_7.capacity :> integer))) ==>
+                  (count{L}(map_7, 0, j) ==
+                    (count{L}(map_7, 0, i_0) + count{L}(map_7, i_0, j))))))))
+   
+  lemma l_count_one_p{L} :
+  (_C_6 : (\forall __anonstruct_Map_5[..] map_8;
+            (\forall integer i_1;
+              (is_valid_map{L}(map_8) ==>
+                (count_one_p{L}(map_8, i_1, (i_1 + 1)) &&
+                  (count{L}(map_8, i_1, (i_1 + 1)) ==
+                    (if (((map_8.items + i_1).existent :> integer) != 0) then 1 else 0)))))))
+  
+}
+
+predicate is_valid_map_mem{L}(__anonstruct_Map_5[..] map_9) =
+\at(((\at((((\offset_min(\at(map_9,L)) <= \at(0,L)) &&
+             (\offset_max(\at(map_9,L)) >= \at(0,L))) &&
+            true),L) &&
+       (\at(\offset_max(\at(map_9.items,L)),L) ==
+         ((map_9.capacity :> integer) - 1))) &&
+      \at((if (\at(0,L) <= \at(((map_9.capacity :> integer) - 1),L)) then 
+          (((\offset_min(\at(map_9.items,L)) <= \at(0,L)) &&
+             (\offset_max(\at(map_9.items,L)) >=
+               \at(((map_9.capacity :> integer) - 1),L))) &&
+            (\forall integer __framac_tmp1;
+              (((\at(0,L) <= __framac_tmp1) &&
+                 (__framac_tmp1 <= \at(((map_9.capacity :> integer) - 1),L))) ==>
+                ((((\offset_min(\at((map_9.items + __framac_tmp1).key_2,L)) <=
+                     \at(0,L)) &&
+                    (\offset_max(\at((map_9.items + __framac_tmp1).key_2,L)) >=
+                      \at(0,L))) &&
+                   true) &&
+                  (((\offset_min(\at((map_9.items + __framac_tmp1).value_2,L)) <=
+                      \at(0,L)) &&
+                     (\offset_max(\at((map_9.items + __framac_tmp1).value_2,L)) >=
+                       \at(0,L))) &&
+                    true))))) else true),L)),L)
+
+predicate is_valid_map_sizes{L}(__anonstruct_Map_5[..] map_10) =
+\at((((0 :> int32) <= map_10.count) && (map_10.count <= map_10.capacity)),L)
+
+predicate begin_ok{L}(__anonstruct_Map_5[..] map_11) =
+\at(((map_11.count > (0 :> int32)) ==>
+      ((map_11.items + 0).existent == (1 :> int32))),L)
+
+predicate is_valid_item{L}(__anonstruct_Map_5[..] map_12, integer idx) =
+\at((((0 <= idx) && (idx < (map_12.capacity :> integer))) ==>
+      (((0 :> int32) <= (map_12.items + idx).existent) &&
+        ((map_12.items + idx).existent <= (1 :> int32)))),L)
+
+predicate count_ok{L}(__anonstruct_Map_5[..] map_13) =
+\at((count_exist{L}(map_13) == (map_13.count :> integer)),L)
+
+predicate gap_ok{L}(__anonstruct_Map_5[..] map_14) =
+\at((\forall integer i_2;
+      (\forall integer j_0;
+        ((((((((i_2 + 1) < j_0) && (j_0 < (map_14.capacity :> integer))) &&
+              (0 <= i_2)) &&
+             (i_2 < ((map_14.capacity :> integer) - 1))) &&
+            ((map_14.items + i_2).existent == (0 :> int32))) &&
+           ((map_14.items + (i_2 + 1)).existent == (0 :> int32))) ==>
+          ((map_14.items + j_0).existent == (0 :> int32))))),L)
+
+predicate is_valid_items{L}(__anonstruct_Map_5[..] map_15) =
+\at((\forall integer i_3;
+      (((0 <= i_3) && (i_3 < (map_15.capacity :> integer))) ==>
+        is_valid_item{L}(map_15, i_3))),L)
+
+predicate compare_keys{L1, L2}(__anonstruct_Key_2[..] k1,
+                               __anonstruct_Key_2[..] k2) =
+((\at(k1.a,L1) == \at(k2.a,L2)) && (\at(k1.b,L1) == \at(k2.b,L2)))
+
+predicate compare_values{L1, L2}(__anonstruct_Value_3[..] v1,
+                                 __anonstruct_Value_3[..] v2) =
+((\at(v1.c,L1) == \at(v2.c,L2)) && (\at(v1.d,L1) == \at(v2.d,L2)))
+
+predicate compare_keys_now{L}(__anonstruct_Key_2[..] k1_0,
+                              __anonstruct_Key_2[..] k2_0) =
+compare_keys{L, L}(k1_0, k2_0)
+
+predicate compare_values_now{L}(__anonstruct_Value_3[..] v1_0,
+                                __anonstruct_Value_3[..] v2_0) =
+compare_values{L, L}(v1_0, v2_0)
+
+predicate valid_existence{L}(__anonstruct_Item_4[..] it) =
+\at((((0 :> int32) <= it.existent) && (it.existent <= (1 :> int32))),L)
+
+predicate item_exists_t{L}(__anonstruct_Item_4[..] it_0) =
+(\at(it_0.existent,L) == (1 :> int32))
+
+logic __anonstruct_Key_2[..] get_key_t{L}(__anonstruct_Item_4[..] it_1) =
+\at(it_1.key_2,L)
+
+logic __anonstruct_Value_3[..] get_value_t{L}(__anonstruct_Item_4[..] it_2) =
+\at(it_2.value_2,L)
+
+logic __anonstruct_Item_4[..] get_item_t{L}(__anonstruct_Map_5[..] map_16,
+                                            integer idx_0) =
+\at((map_16.items + idx_0),L)
+
+predicate all_valid_existence{L}(__anonstruct_Map_5[..] map_17) =
+\at((\forall integer i_4;
+      (((0 <= i_4) && (i_4 <= (map_17.capacity :> integer))) ==>
+        valid_existence{L}(get_item_t{L}(map_17, i_4)))),L)
+
+predicate unique_keys{L}(__anonstruct_Map_5[..] map_18) =
+\at((\forall integer i_5;
+      (\forall integer j_1;
+        (((((((0 <= i_5) && (i_5 < (map_18.capacity :> integer))) &&
+              ((map_18.capacity :> integer) > j_1)) &&
+             (j_1 > i_5)) &&
+            item_exists_t{L}(get_item_t{L}(map_18, i_5))) &&
+           item_exists_t{L}(get_item_t{L}(map_18, j_1))) ==>
+          (! compare_keys_now{L}(get_key_t{L}(get_item_t{L}(map_18, i_5)),
+                                 get_key_t{L}(get_item_t{L}(map_18, j_1))))))),L)
+
+predicate compare_items{L1, L2}(__anonstruct_Item_4[..] i1,
+                                __anonstruct_Item_4[..] i2) =
+(compare_keys{L1,
+  L2}(\at(i1.key_2,L1), \at(i2.key_2,L2)) &&
+  compare_values{L1,
+  L2}(\at(i1.value_2,L1), \at(i2.value_2,L2)))
+
+predicate count_lowers{L1, L2}(__anonstruct_Map_5[..] map_19) =
+((\at(map_19.count,L1) :> integer) ==
+  ((\at(map_19.count,L2) :> integer) + 1))
+
+predicate same_count{L1, L2}(__anonstruct_Map_5[..] map_20) =
+(\at(map_20.count,L1) == \at(map_20.count,L2))
+
+predicate same_capacity{L1, L2}(__anonstruct_Map_5[..] map_21) =
+(\at(map_21.capacity,L1) == \at(map_21.capacity,L2))
+
+predicate same_items{L1, L2}(__anonstruct_Map_5[..] map_22) =
+(\forall integer i_6;
+  (((((0 <= i_6) && (i_6 < (\at(map_22.capacity,L2) :> integer))) &&
+      item_exists_t{L1}(get_item_t{L1}(map_22, i_6))) &&
+     item_exists_t{L2}(get_item_t{L2}(map_22, i_6))) ==>
+    compare_items{L1,
+    L2}(\at((map_22.items + i_6),L1), \at((map_22.items + i_6),L2))))
+
+predicate no_mchg{L1, L2}(__anonstruct_Map_5[..] map_23,
+                          __anonstruct_Key_2[..] key) =
+(\forall integer i_7;
+  (((((0 <= i_7) && (i_7 < (\at(map_23.capacity,L1) :> integer))) &&
+      item_exists_t{L1}(get_item_t{L1}(map_23, i_7))) &&
+     (! compare_keys{L1,
+     L1}(key, get_key_t{L1}(get_item_t{L1}(map_23, i_7))))) ==>
+    (\exists integer j_2;
+      ((((0 <= j_2) && (j_2 < (\at(map_23.capacity,L2) :> integer))) &&
+         item_exists_t{L2}(get_item_t{L2}(map_23, j_2))) &&
+        compare_items{L1,
+        L2}(get_item_t{L1}(map_23, i_7), get_item_t{L2}(map_23, j_2))))))
+
+predicate no_new{L1, L2}(__anonstruct_Map_5[..] map_24) =
+(\forall integer i_8;
+  ((((0 <= i_8) && (i_8 < (\at(map_24.capacity,L2) :> integer))) &&
+     item_exists_t{L2}(get_item_t{L2}(map_24, i_8))) ==>
+    (\exists integer j_3;
+      ((((0 <= j_3) && (j_3 <= (\at(map_24.capacity,L1) :> integer))) &&
+         item_exists_t{L1}(get_item_t{L1}(map_24, j_3))) &&
+        compare_items{L1,
+        L2}(get_item_t{L2}(map_24, i_8), get_item_t{L1}(map_24, j_3))))))
+
+predicate is_valid_map{L}(__anonstruct_Map_5[..] map_25) =
+\at((((((((((\at(\offset_max(\at(map_25.items,L)),L) ==
+              ((map_25.capacity :> integer) - 1)) &&
+             \at((if (\at(0,L) <= \at(((map_25.capacity :> integer) - 1),L)) then 
+                 (((\offset_min(\at(map_25.items,L)) <= \at(0,L)) &&
+                    (\offset_max(\at(map_25.items,L)) >=
+                      \at(((map_25.capacity :> integer) - 1),L))) &&
+                   (\forall integer __framac_tmp5;
+                     (((\at(0,L) <= __framac_tmp5) &&
+                        (__framac_tmp5 <=
+                          \at(((map_25.capacity :> integer) - 1),L))) ==>
+                       ((((\offset_min(\at((map_25.items + __framac_tmp5).key_2,L)) <=
+                            \at(0,L)) &&
+                           (\offset_max(\at((map_25.items + __framac_tmp5).key_2,L)) >=
+                             \at(0,L))) &&
+                          true) &&
+                         (((\offset_min(\at((map_25.items + __framac_tmp5).value_2,L)) <=
+                             \at(0,L)) &&
+                            (\offset_max(\at((map_25.items + __framac_tmp5).value_2,L)) >=
+                              \at(0,L))) &&
+                           true))))) else true),L)) &&
+            ((0 :> int32) <= map_25.count)) &&
+           (map_25.count <= map_25.capacity)) &&
+          ((map_25.count > (0 :> int32)) ==>
+            ((map_25.items + 0).existent == (1 :> int32)))) &&
+         (\forall integer i_9;
+           (((0 <= i_9) && (i_9 < (map_25.capacity :> integer))) ==>
+             (((map_25.items + i_9).existent == (0 :> int32)) ||
+               ((map_25.items + i_9).existent == (1 :> int32)))))) &&
+        (count{L}(map_25, 0, (map_25.capacity :> integer)) ==
+          (map_25.count :> integer))) &&
+       (\forall integer i_10;
+         (\forall integer j_4;
+           (((((((0 <= i_10) && (i_10 < (map_25.capacity :> integer))) &&
+                 (i_10 < j_4)) &&
+                (j_4 < (map_25.capacity :> integer))) &&
+               ((map_25.items + i_10).existent == (1 :> int32))) &&
+              ((map_25.items + j_4).existent == (1 :> int32))) ==>
+             (! (((map_25.items + i_10).key_2.a ==
+                   (map_25.items + j_4).key_2.a) &&
+                  ((map_25.items + i_10).key_2.b ==
+                    (map_25.items + j_4).key_2.b))))))) &&
+      (\forall integer i_11;
+        (\forall integer j_5;
+          ((((((0 < i_11) && (i_11 < j_5)) &&
+               (j_5 < (map_25.capacity :> integer))) &&
+              ((map_25.items + (i_11 - 1)).existent == (0 :> int32))) &&
+             ((map_25.items + i_11).existent == (0 :> int32))) ==>
+            ((map_25.items + j_5).existent == (0 :> int32)))))),L)
+
+int32 initializeMap(__anonstruct_Map_5[..] map_2, int32 size)
+  requires ((_C_66 : \at((((\offset_min(\at(map_2,Here)) <= \at(0,Here)) &&
+                            (\offset_max(\at(map_2,Here)) >= \at(0,Here))) &&
+                           true),Here)) &&
+             (_C_67 : (size >= (0 :> int32))));
+behavior default:
+  ensures (_C_53 : ((_C_54 : ((\result == (0 :> int32)) ==>
+                               (\at(\offset_max(\at(\at(map_2,Old).items,Here)),Here) ==
+                                 ((\at(size,Old) :> integer) - 1)))) &&
+                     ((_C_56 : ((\result == (0 :> int32)) ==>
+                                 \freeable{Here}(\at(map_2,Old).items))) &&
+                       ((_C_58 : ((\result == (0 :> int32)) ==>
+                                   (\at(map_2,Old).capacity == \at(size,Old)))) &&
+                         ((_C_60 : ((\result == (0 :> int32)) ==>
+                                     (\at(map_2,Old).count == (0 :> int32)))) &&
+                           ((_C_62 : ((\result == (0 :> int32)) ==>
+                                       is_valid_map{Here}(\at(map_2,Old)))) &&
+                             ((_C_64 : ((\result == (0 :> int32)) ==>
+                                         (\forall integer i_12;
+                                           (((0 <= i_12) &&
+                                              (i_12 <
+                                                (\at(map_2,Old).capacity :> integer))) ==>
+                                             ((\at(map_2,Old).items + i_12).existent ==
+                                               (0 :> int32)))))) &&
+                               (_C_65 : ((\result == (0 :> int32)) ==>
+                                          \allocable{Old}(\at(map_2,Old).items))))))))));
+{  
+   (var int32 i);
+   
+   (var int32 i_0);
+   
+   (var int32 __retres);
+   
+   {  (if (_C_8 : (size < (0 :> int32))) then 
+      (goto _LOR) else (if (_C_7 : (map_2 == null)) then 
+                       (goto _LOR) else ()));
+      
+      (goto _LOR_0);
+      (_LOR : (_LOR : 
+              {  (_C_9 : (__retres = (1 :> int32)));
+                 
+                 (goto return_label)
+              }));
+      (_LOR_0 : ());
+      (_C_13 : ((_C_12 : map_2.items) = (_C_11 : (new __anonstruct_Item_4[
+                                        (_C_10 : (size :> uint64))]))));
+      (_C_15 : ((_C_14 : map_2.capacity) = size));
+      (_C_17 : ((_C_16 : map_2.count) = (0 :> int32)));
+      (if (_C_20 : ((_C_19 : map_2.items) == null)) then 
+      {  (_C_18 : (__retres = (1 :> int32)));
+         
+         (goto return_label)
+      } else ());
+      
+      {  (_C_21 : (i = (0 :> int32)));
+         (LoopEntry : 
+         loop 
+         behavior default:
+           invariant (_C_25 : ((_C_26 : ((0 :> int32) <= i)) &&
+                                (_C_27 : (i <= map_2.capacity))));
+         behavior default:
+           invariant (_C_24 : \at((if (\at(0,Here) <=
+                                        \at(((map_2.capacity :> integer) - 1),Here)) then 
+                                  (((\offset_min(\at(map_2.items,Here)) <=
+                                      \at(0,Here)) &&
+                                     (\offset_max(\at(map_2.items,Here)) >=
+                                       \at(((map_2.capacity :> integer) - 1),Here))) &&
+                                    (\forall integer __framac_tmp8;
+                                      (((\at(0,Here) <= __framac_tmp8) &&
+                                         (__framac_tmp8 <=
+                                           \at(((map_2.capacity :> integer) -
+                                                 1),Here))) ==>
+                                        ((((\offset_min(\at((map_2.items +
+                                                              __framac_tmp8).key_2,Here)) <=
+                                             \at(0,Here)) &&
+                                            (\offset_max(\at((map_2.items +
+                                                               __framac_tmp8).key_2,Here)) >=
+                                              \at(0,Here))) &&
+                                           true) &&
+                                          (((\offset_min(\at((map_2.items +
+                                                               __framac_tmp8).value_2,Here)) <=
+                                              \at(0,Here)) &&
+                                             (\offset_max(\at((map_2.items +
+                                                                __framac_tmp8).value_2,Here)) >=
+                                               \at(0,Here))) &&
+                                            true))))) else true),Here));
+         behavior default:
+           invariant (_C_23 : (\forall integer j_6;
+                                (((0 <= j_6) && (j_6 < (i :> integer))) ==>
+                                  ((map_2.items + j_6).existent ==
+                                    (0 :> int32)))));
+         variant (_C_22 : ((map_2.capacity :> integer) - (i :> integer)));
+         while (true)
+         {  
+            {  (LoopCurrent : (if (_C_29 : (i < (_C_28 : map_2.capacity))) then () else 
+                              (goto while_0_break)));
+               (_C_33 : ((_C_32 : (_C_31 : ((_C_30 : map_2.items) + i)).existent) = (0 :> int32)));
+               (_C_36 : (i = (_C_35 : ((_C_34 : (i + (1 :> int32))) :> int32))))
+            }
+         });
+         (while_0_break : ())
+      };
+      (_C_37 : (i_0 = (0 :> int32)));
+      (LoopEntry : 
+      loop 
+      behavior default:
+        invariant (_C_40 : ((_C_41 : ((0 :> int32) <= i_0)) &&
+                             (_C_42 : (i_0 <= map_2.capacity))));
+      behavior default:
+        invariant (_C_39 : (count{Here}(map_2, 0, (i_0 :> integer)) == 0));
+      variant (_C_38 : ((map_2.capacity :> integer) - (i_0 :> integer)));
+      while (true)
+      {  
+         {  (LoopCurrent : (if (_C_44 : (i_0 < (_C_43 : map_2.capacity))) then () else 
+                           (goto while_0_break_0)));
+            
+            {  (_C_47 : (i_0 = (_C_46 : ((_C_45 : (i_0 + (1 :> int32))) :> int32))));
+               
+               {  
+                  (assert for default: (_C_48 : (astraver : (count{Here}(
+                                                              map_2, 0,
+                                                              ((i_0 :> integer) -
+                                                                1)) ==
+                                                              0))));
+                  ()
+               };
+               
+               {  
+                  (assert for default: (_C_49 : (astraver : (((map_2.items +
+                                                                ((i_0 :> integer) -
+                                                                  1)).existent ==
+                                                               (0 :> int32)) ==>
+                                                              (count{Here}(
+                                                                map_2,
+                                                                ((i_0 :> integer) -
+                                                                  1),
+                                                                (i_0 :> integer)) ==
+                                                                0)))));
+                  ()
+               };
+               
+               {  
+                  (assert for default: (_C_50 : (astraver : ((((count{Here}(
+                                                                 map_2, 0,
+                                                                 (i_0 :> integer)) ==
+                                                                 (count{Here}(
+                                                                   map_2, 0,
+                                                                   ((i_0 :> integer) -
+                                                                    1)) +
+                                                                   count{Here}(
+                                                                   map_2,
+                                                                   ((i_0 :> integer) -
+                                                                    1),
+                                                                   (i_0 :> integer)))) &&
+                                                                ((count{Here}(
+                                                                   map_2, 0,
+                                                                   ((i_0 :> integer) -
+                                                                    1)) +
+                                                                   count{Here}(
+                                                                   map_2,
+                                                                   ((i_0 :> integer) -
+                                                                    1),
+                                                                   (i_0 :> integer))) ==
+                                                                  (0 +
+                                                                    count{Here}(
+                                                                    map_2,
+                                                                    ((i_0 :> integer) -
+                                                                    1),
+                                                                    (i_0 :> integer))))) &&
+                                                               ((0 +
+                                                                  count{Here}(
+                                                                  map_2,
+                                                                  ((i_0 :> integer) -
+                                                                    1),
+                                                                  (i_0 :> integer))) ==
+                                                                 (0 + 0))) &&
+                                                              ((0 + 0) == 0)))));
+                  ()
+               }
+            }
+         }
+      });
+      (while_0_break_0 : ());
+      
+      {  
+         (assert for default: (_C_51 : (astraver : ((map_2.count ==
+                                                      (0 :> int32)) &&
+                                                     (0 ==
+                                                       count{Here}(map_2, 0,
+                                                                   (map_2.capacity :> integer)))))));
+         ()
+      };
+      (_C_52 : (__retres = (0 :> int32)));
+      (return_label : 
+      (return __retres))
+   }
+}
+
+int32 addElement(__anonstruct_Map_5[..] map, __anonstruct_Key_2[..] key,
+                 __anonstruct_Value_3[..] value)
+  requires ((_C_208 : (((_C_210 : \at((((\offset_min(\at(map,Here)) <=
+                                          \at(0,Here)) &&
+                                         (\offset_max(\at(map,Here)) >=
+                                           \at(0,Here))) &&
+                                        true),Here)) &&
+                         (_C_211 : \at((((\offset_min(\at(key,Here)) <=
+                                           \at(0,Here)) &&
+                                          (\offset_max(\at(key,Here)) >=
+                                            \at(0,Here))) &&
+                                         true),Here))) &&
+                        (_C_212 : \at((((\offset_min(\at(value,Here)) <=
+                                          \at(0,Here)) &&
+                                         (\offset_max(\at(value,Here)) >=
+                                           \at(0,Here))) &&
+                                        true),Here)))) &&
+             (_C_213 : is_valid_map{Here}(map)));
+behavior default:
+  assigns (map.items + [0..((map.capacity :> integer) - 1)]).key_2.a,
+  (map.items + [0..((map.capacity :> integer) - 1)]).key_2.b,
+  (map.items + [0..((map.capacity :> integer) - 1)]).value_2.c,
+  (map.items + [0..((map.capacity :> integer) - 1)]).value_2.d,
+  (map.items + [0..((map.capacity :> integer) - 1)]).existent,
+  map.count;
+  allocates \nothing;
+  ensures (_C_185 : (((_C_187 : ((0 :> int32) <= \result)) &&
+                       (_C_188 : (\result <= (1 :> int32)))) &&
+                      ((_C_190 : is_valid_map{Here}(\at(map,Old))) &&
+                        ((_C_192 : same_capacity{Old, Here}(\at(map,Old))) &&
+                          ((_C_194 : compare_keys{Old,
+                           Here}(\at(key,Old), \at(key,Old))) &&
+                            ((_C_196 : compare_values{Old,
+                             Here}(\at(value,Old), \at(value,Old))) &&
+                              ((_C_198 : ((\result == (1 :> int32)) ==>
+                                           (\exists integer i_13;
+                                             (((((0 <= i_13) &&
+                                                  (i_13 <
+                                                    (\at(map,Old).capacity :> integer))) &&
+                                                 compare_keys{Here,
+                                                 Here}(get_key_t{Here}(
+                                                       get_item_t{Here}(
+                                                       \at(map,Old), i_13)),
+                                                       \at(key,Old))) &&
+                                                compare_values{Here,
+                                                Here}(get_value_t{Here}(
+                                                      get_item_t{Here}(
+                                                      \at(map,Old), i_13)),
+                                                      \at(value,Old))) &&
+                                               ((\at(map,Old).items + i_13).existent ==
+                                                 (1 :> int32)))))) &&
+                                (((_C_201 : (((\result == (1 :> int32)) ==>
+                                               (\exists integer i_14;
+                                                 ((((0 <= i_14) &&
+                                                     (i_14 <
+                                                       (\at(map,Old).capacity :> integer))) &&
+                                                    compare_keys{Here,
+                                                    Here}(get_key_t{Here}(
+                                                          get_item_t{Here}(
+                                                          \at(map,Old), i_14)),
+                                                          \at(key,Old))) &&
+                                                   ((\at(map,Old).items +
+                                                      i_14).existent ==
+                                                     (1 :> int32))))) ==>
+                                              (\at(\at(map,Old).count,Here) ==
+                                                \at(map.count,Old)))) &&
+                                   (_C_202 : ((! ((\result == (1 :> int32)) ==>
+                                                   (\exists integer i_15;
+                                                     ((((0 <= i_15) &&
+                                                         (i_15 <
+                                                           (\at(map,Old).capacity :> integer))) &&
+                                                        compare_keys{Here,
+                                                        Here}(get_key_t{Here}(
+                                                              get_item_t{Here}(
+                                                              \at(map,Old),
+                                                              i_15)),
+                                                              \at(key,Old))) &&
+                                                       ((\at(map,Old).items +
+                                                          i_15).existent ==
+                                                         (1 :> int32)))))) ==>
+                                               ((\at(\at(map,Old).count,Here) :> integer) ==
+                                                 ((\at(map.count,Old) :> integer) +
+                                                   1))))) &&
+                                  ((_C_204 : ((\result == (1 :> int32)) ==>
+                                               no_mchg{Old,
+                                               Here}(\at(map,Old),
+                                                     \at(key,Old)))) &&
+                                    ((_C_206 : ((\result == (0 :> int32)) ==>
+                                                 (\at(map.count,Old) ==
+                                                   \at(map.capacity,Old)))) &&
+                                      (_C_207 : ((\result == (0 :> int32)) ==>
+                                                  (\forall integer i_16;
+                                                    (((0 <= i_16) &&
+                                                       (i_16 <
+                                                         (\at(map,Old).capacity :> integer))) ==>
+                                                      (! ((((\at(map,Old).items +
+                                                              i_16).key_2.a ==
+                                                             \at(key,Old).a) &&
+                                                            ((\at(map,Old).items +
+                                                               i_16).key_2.b ==
+                                                              \at(key,Old).b)) &&
+                                                           ((\at(map,Old).items +
+                                                              i_16).existent ==
+                                                             (1 :> int32))))))))))))))))));
+{  
+   (var int32 i_0_0);
+   
+   (var int32 k);
+   
+   (var int32 i_0_1);
+   
+   (var int32 __retres_0);
+   
+   {  (if (_C_70 : (map == null)) then 
+      (goto _LOR_0_0) else (if (_C_69 : ((_C_68 : map.items) == null)) then 
+                           (goto _LOR_0_0) else ()));
+      
+      (goto _LOR_0_1);
+      (_LOR_0_0 : (_LOR_0_0 : 
+                  {  (_C_71 : (__retres_0 = (-1 :> int32)));
+                     
+                     (goto return_label_0)
+                  }));
+      (_LOR_0_1 : ());
+      
+      {  (_C_72 : (i_0_0 = (0 :> int32)));
+         (LoopEntry : 
+         loop 
+         behavior default:
+           invariant (_C_78 : ((_C_79 : ((0 :> int32) <= i_0_0)) &&
+                                (_C_80 : (i_0_0 <= map.capacity))));
+         behavior default:
+           invariant (_C_77 : \at((if (\at(0,Here) <=
+                                        \at(((map.capacity :> integer) - 1),Here)) then 
+                                  (((\offset_min(\at(map.items,Here)) <=
+                                      \at(0,Here)) &&
+                                     (\offset_max(\at(map.items,Here)) >=
+                                       \at(((map.capacity :> integer) - 1),Here))) &&
+                                    (\forall integer __framac_tmp12;
+                                      (((\at(0,Here) <= __framac_tmp12) &&
+                                         (__framac_tmp12 <=
+                                           \at(((map.capacity :> integer) -
+                                                 1),Here))) ==>
+                                        ((((\offset_min(\at((map.items +
+                                                              __framac_tmp12).key_2,Here)) <=
+                                             \at(0,Here)) &&
+                                            (\offset_max(\at((map.items +
+                                                               __framac_tmp12).key_2,Here)) >=
+                                              \at(0,Here))) &&
+                                           true) &&
+                                          (((\offset_min(\at((map.items +
+                                                               __framac_tmp12).value_2,Here)) <=
+                                              \at(0,Here)) &&
+                                             (\offset_max(\at((map.items +
+                                                                __framac_tmp12).value_2,Here)) >=
+                                               \at(0,Here))) &&
+                                            true))))) else true),Here));
+         behavior default:
+           invariant (_C_76 : (\forall integer j_8;
+                                (((0 <= j_8) && (j_8 < (i_0_0 :> integer))) ==>
+                                  (! ((((map.items + j_8).key_2.a == key.a) &&
+                                        ((map.items + j_8).key_2.b == key.b)) &&
+                                       ((map.items + j_8).existent ==
+                                         (1 :> int32)))))));
+         behavior default:
+           invariant (_C_75 : (\forall integer j_9;
+                                (((0 <= j_9) && (j_9 < (i_0_0 :> integer))) ==>
+                                  ((compare_items{Pre,
+                                     Here}(get_item_t{Pre}(map,
+                                                           (i_0_0 :> integer)),
+                                           get_item_t{Here}(map,
+                                                            (i_0_0 :> integer))) &&
+                                     (\at((map.items + j_9).existent,Pre) ==
+                                       \at((map.items + j_9).existent,Here))) &&
+                                    (\at((map.items + j_9).existent,Here) ==
+                                      (1 :> int32))))));
+         behavior default:
+           invariant (_C_74 : (count{Here}(map, 0, (map.capacity :> integer)) ==
+                                count{Pre}(map, 0, (map.capacity :> integer))));
+         variant (_C_73 : ((map.capacity :> integer) - (i_0_0 :> integer)));
+         while (true)
+         {  
+            {  (LoopCurrent : (if (_C_82 : (i_0_0 < (_C_81 : map.capacity))) then () else 
+                              (goto while_0_break_0_0)));
+               
+               {  (if (_C_125 : ((_C_124 : (_C_123 : (_C_122 : ((_C_121 : map.items) +
+                                                                 i_0_0)).key_2).a) ==
+                                  (_C_120 : key.a))) then (if (_C_119 : 
+                                                              ((_C_118 : 
+                                                               (_C_117 : 
+                                                               (_C_116 : 
+                                                               ((_C_115 : map.items) +
+                                                                 i_0_0)).key_2).b) ==
+                                                                (_C_114 : key.b))) then 
+                                                          (if (_C_113 : 
+                                                              ((_C_112 : 
+                                                               (_C_111 : 
+                                                               ((_C_110 : map.items) +
+                                                                 i_0_0)).existent) ==
+                                                                (1 :> int32))) then 
+                                                          {  (_C_88 : (
+                                                             (_C_87 : 
+                                                             (_C_86 : 
+                                                             (_C_85 : 
+                                                             ((_C_84 : map.items) +
+                                                               i_0_0)).value_2).c) = 
+                                                             (_C_83 : value.c)));
+                                                             (_C_94 : (
+                                                             (_C_93 : 
+                                                             (_C_92 : 
+                                                             (_C_91 : 
+                                                             ((_C_90 : map.items) +
+                                                               i_0_0)).value_2).d) = 
+                                                             (_C_89 : value.d)));
+                                                             (_C_97 : (k = 
+                                                             (_C_96 : (
+                                                             (_C_95 : 
+                                                             (i_0_0 +
+                                                               (1 :> int32))) :> int32))));
+                                                             (LoopEntry : 
+                                                             loop 
+                                                             behavior default:
+                                                               invariant 
+                                                               (_C_100 : 
+                                                               ((_C_101 : 
+                                                                (((i_0_0 :> integer) +
+                                                                   1) <=
+                                                                  (k :> integer))) &&
+                                                                 (_C_102 : 
+                                                                 (k <=
+                                                                   map.capacity))));
+                                                             behavior default:
+                                                               invariant 
+                                                               (_C_99 : 
+                                                               (\forall integer j_7;
+                                                                 (((((i_0_0 :> integer) +
+                                                                    1) <=
+                                                                    j_7) &&
+                                                                    (j_7 <
+                                                                    (k :> integer))) ==>
+                                                                   ((compare_items{Pre,
+                                                                    Here}(
+                                                                    get_item_t{Pre}(
+                                                                    map, j_7),
+                                                                    get_item_t{Here}(
+                                                                    map, j_7)) &&
+                                                                    (\at(
+                                                                    (map.items +
+                                                                    j_7).existent,Pre) ==
+                                                                    \at(
+                                                                    (map.items +
+                                                                    j_7).existent,Here))) &&
+                                                                    (\at(
+                                                                    (map.items +
+                                                                    j_7).existent,Here) ==
+                                                                    (1 :> int32))))));
+                                                             variant 
+                                                             (_C_98 : 
+                                                             ((map.capacity :> integer) -
+                                                               (k :> integer)));
+                                                             while (true)
+                                                             {  
+                                                                {  (LoopCurrent : 
+                                                                   (if 
+                                                                   (_C_104 : 
+                                                                   (k <
+                                                                    (_C_103 : map.capacity))) then () else 
+                                                                   (goto while_1_break)));
+                                                                   (_C_107 : (k = 
+                                                                   (_C_106 : (
+                                                                   (_C_105 : 
+                                                                   (k +
+                                                                    (1 :> int32))) :> int32))))
+                                                                }
+                                                             });
+                                                             (while_1_break : ());
+                                                             
+                                                             {  
+                                                                (assert for default: 
+                                                                (_C_108 : 
+                                                                (astraver : no_mchg{Pre,
+                                                                Here}(
+                                                                map, key))));
+                                                                ()
+                                                             };
+                                                             
+                                                             {  (_C_109 : (__retres_0 = (1 :> int32)));
+                                                                
+                                                                (goto return_label_0)
+                                                             }
+                                                          } else ()) else ()) else ())
+               };
+               (_C_128 : (i_0_0 = (_C_127 : ((_C_126 : (i_0_0 + (1 :> int32))) :> int32))))
+            }
+         });
+         (while_0_break_0_0 : ())
+      };
+      (if (_C_182 : ((_C_181 : map.count) == (_C_180 : map.capacity))) then 
+      {  (_C_179 : (__retres_0 = (0 :> int32)));
+         
+         (goto return_label_0)
+      } else 
+      {  (_C_129 : (i_0_1 = (0 :> int32)));
+         (LoopEntry : 
+         loop 
+         behavior default:
+           invariant (_C_132 : ((_C_133 : ((0 :> int32) <= i_0_1)) &&
+                                 (_C_134 : (i_0_1 <= map.capacity))));
+         behavior default:
+           invariant (_C_131 : \at((if (\at(0,Here) <=
+                                         \at(((map.capacity :> integer) - 1),Here)) then 
+                                   (((\offset_min(\at(map.items,Here)) <=
+                                       \at(0,Here)) &&
+                                      (\offset_max(\at(map.items,Here)) >=
+                                        \at(((map.capacity :> integer) - 1),Here))) &&
+                                     (\forall integer __framac_tmp15;
+                                       (((\at(0,Here) <= __framac_tmp15) &&
+                                          (__framac_tmp15 <=
+                                            \at(((map.capacity :> integer) -
+                                                  1),Here))) ==>
+                                         ((((\offset_min(\at((map.items +
+                                                               __framac_tmp15).key_2,Here)) <=
+                                              \at(0,Here)) &&
+                                             (\offset_max(\at((map.items +
+                                                                __framac_tmp15).key_2,Here)) >=
+                                               \at(0,Here))) &&
+                                            true) &&
+                                           (((\offset_min(\at((map.items +
+                                                                __framac_tmp15).value_2,Here)) <=
+                                               \at(0,Here)) &&
+                                              (\offset_max(\at((map.items +
+                                                                 __framac_tmp15).value_2,Here)) >=
+                                                \at(0,Here))) &&
+                                             true))))) else true),Here));
+         variant (_C_130 : ((map.capacity :> integer) - (i_0_1 :> integer)));
+         while (true)
+         {  
+            {  (LoopCurrent : (if (_C_136 : (i_0_1 < (_C_135 : map.capacity))) then () else 
+                              (goto while_0_break_0_1)));
+               
+               {  
+                  {  
+                     (assert for default: (_C_137 : (astraver : (map.count <
+                                                                  map.capacity))));
+                     ()
+                  };
+                  (if (_C_175 : ((_C_174 : (_C_173 : ((_C_172 : map.items) +
+                                                       i_0_1)).existent) ==
+                                  (0 :> int32))) then 
+                  {  (_C_143 : ((_C_142 : (_C_141 : (_C_140 : ((_C_139 : map.items) +
+                                                                i_0_1)).key_2).a) = 
+                     (_C_138 : key.a)));
+                     (_C_149 : ((_C_148 : (_C_147 : (_C_146 : ((_C_145 : map.items) +
+                                                                i_0_1)).key_2).b) = 
+                     (_C_144 : key.b)));
+                     (_C_155 : ((_C_154 : (_C_153 : (_C_152 : ((_C_151 : map.items) +
+                                                                i_0_1)).value_2).c) = 
+                     (_C_150 : value.c)));
+                     (_C_161 : ((_C_160 : (_C_159 : (_C_158 : ((_C_157 : map.items) +
+                                                                i_0_1)).value_2).d) = 
+                     (_C_156 : value.d)));
+                     (_C_165 : ((_C_164 : (_C_163 : ((_C_162 : map.items) +
+                                                      i_0_1)).existent) = (1 :> int32)));
+                     (_C_170 : ((_C_169 : map.count) = (_C_168 : ((_C_167 : 
+                                                                  ((_C_166 : map.count) +
+                                                                    (1 :> int32))) :> int32))));
+                     
+                     {  (_C_171 : (__retres_0 = (1 :> int32)));
+                        
+                        (goto return_label_0)
+                     }
+                  } else ())
+               };
+               (_C_178 : (i_0_1 = (_C_177 : ((_C_176 : (i_0_1 + (1 :> int32))) :> int32))))
+            }
+         });
+         (while_0_break_0_1 : ())
+      });
+      
+      {  
+         (assert for default: (_C_183 : (astraver : (missing_return : false))));
+         ()
+      };
+      (_C_184 : (__retres_0 = (0 :> int32)));
+      (return_label_0 : 
+      (return __retres_0))
+   }
+}
+
+int32 getElement(__anonstruct_Map_5[..] map_1, __anonstruct_Key_2[..] key_0,
+                 __anonstruct_Value_3[..] value_0)
+  requires ((_C_286 : is_valid_map{Here}(map_1)) &&
+             ((_C_287 : \at((((\offset_min(\at(map_1,Here)) <= \at(0,Here)) &&
+                               (\offset_max(\at(map_1,Here)) >= \at(0,Here))) &&
+                              true),Here)) &&
+               ((_C_288 : \at((((\offset_min(\at(key_0,Here)) <= \at(0,Here)) &&
+                                 (\offset_max(\at(key_0,Here)) >=
+                                   \at(0,Here))) &&
+                                true),Here)) &&
+                 (_C_289 : \at((((\offset_min(\at(value_0,Here)) <=
+                                   \at(0,Here)) &&
+                                  (\offset_max(\at(value_0,Here)) >=
+                                    \at(0,Here))) &&
+                                 true),Here)))));
+behavior default:
+  assigns value_0.c,
+  value_0.d;
+  allocates \nothing;
+  ensures (_C_265 : ((_C_266 : is_valid_map{Here}(\at(map_1,Old))) &&
+                      ((_C_268 : same_capacity{Old, Here}(\at(map_1,Old))) &&
+                        ((_C_270 : same_count{Old, Here}(\at(map_1,Old))) &&
+                          ((_C_272 : same_items{Old, Here}(\at(map_1,Old))) &&
+                            ((_C_274 : compare_keys{Old,
+                             Here}(\at(key_0,Old), \at(key_0,Old))) &&
+                              ((_C_276 : \at(\at((((\offset_min(\at(key_0,Old)) <=
+                                                     \at(0,Old)) &&
+                                                    (\offset_max(\at(key_0,Old)) >=
+                                                      \at(0,Old))) &&
+                                                   true),Here),Old)) &&
+                                ((_C_278 : \at(\at((((\offset_min(\at(value_0,Old)) <=
+                                                       \at(0,Old)) &&
+                                                      (\offset_max(\at(value_0,Old)) >=
+                                                        \at(0,Old))) &&
+                                                     true),Here),Old)) &&
+                                  (((_C_281 : ((0 :> int32) <= \result)) &&
+                                     (_C_282 : (\result <= (1 :> int32)))) &&
+                                    ((_C_284 : ((\result == (1 :> int32)) ==>
+                                                 (\exists integer i_17;
+                                                   (((((0 <= i_17) &&
+                                                        (i_17 <
+                                                          (\at(map_1,Old).capacity :> integer))) &&
+                                                       compare_keys{Here,
+                                                       Here}(\at(key_0,Old),
+                                                             get_key_t{Here}(
+                                                             get_item_t{Here}(
+                                                             \at(map_1,Old),
+                                                             i_17)))) &&
+                                                      compare_values{Here,
+                                                      Here}(\at(value_0,Old),
+                                                            get_value_t{Here}(
+                                                            get_item_t{Here}(
+                                                            \at(map_1,Old),
+                                                            i_17)))) &&
+                                                     ((\at(map_1,Old).items +
+                                                        i_17).existent ==
+                                                       (1 :> int32)))))) &&
+                                      (_C_285 : ((\result == (0 :> int32)) ==>
+                                                  (compare_values{Old,
+                                                    Here}(\at(value_0,Old),
+                                                          \at(value_0,Old)) &&
+                                                    (\forall integer i_18;
+                                                      (((0 <= i_18) &&
+                                                         (i_18 <
+                                                           (\at(map_1,Old).capacity :> integer))) ==>
+                                                        (! ((((\at(map_1,Old).items +
+                                                                i_18).key_2.a ==
+                                                               \at(key_0,Old).a) &&
+                                                              ((\at(map_1,Old).items +
+                                                                 i_18).key_2.b ==
+                                                                \at(key_0,Old).b)) &&
+                                                             ((\at(map_1,Old).items +
+                                                                i_18).existent ==
+                                                               (1 :> int32)))))))))))))))))));
+{  
+   (var int32 i_0_2);
+   
+   (var int32 __retres_1);
+   
+   {  (if (_C_217 : (map_1 == null)) then 
+      (goto _LOR_0_2) else (if (_C_216 : ((_C_215 : map_1.items) == null)) then 
+                           (goto _LOR_0_2) else (if (_C_214 : (key_0 == null)) then 
+                                                (goto _LOR_0_2) else ())));
+      
+      (goto _LOR_0_3);
+      (_LOR_0_2 : (_LOR_0_2 : 
+                  {  (_C_218 : (__retres_1 = (-1 :> int32)));
+                     
+                     (goto return_label_1)
+                  }));
+      (_LOR_0_3 : ());
+      (_Pre1 : 
+      {  
+         (assert for default: (_C_219 : (astraver : (map_1.capacity >=
+                                                      (0 :> int32)))));
+         ()
+      });
+      
+      {  (_C_220 : (i_0_2 = (0 :> int32)));
+         (LoopEntry : 
+         loop 
+         behavior default:
+           invariant (_C_225 : ((_C_226 : ((0 :> int32) <= i_0_2)) &&
+                                 (_C_227 : (i_0_2 <= map_1.capacity))));
+         behavior default:
+           invariant (_C_224 : \at((if (\at(0,Here) <=
+                                         \at(((map_1.capacity :> integer) -
+                                               1),Here)) then (((\offset_min(
+                                                                  \at(map_1.items,Here)) <=
+                                                                  \at(0,Here)) &&
+                                                                 (\offset_max(
+                                                                   \at(map_1.items,Here)) >=
+                                                                   \at(
+                                                                   ((map_1.capacity :> integer) -
+                                                                    1),Here))) &&
+                                                                (\forall integer __framac_tmp21;
+                                                                  (((\at(0,Here) <=
+                                                                    __framac_tmp21) &&
+                                                                    (__framac_tmp21 <=
+                                                                    \at(
+                                                                    ((map_1.capacity :> integer) -
+                                                                    1),Here))) ==>
+                                                                    ((((\offset_min(
+                                                                    \at(
+                                                                    (map_1.items +
+                                                                    __framac_tmp21).key_2,Here)) <=
+                                                                    \at(0,Here)) &&
+                                                                    (\offset_max(
+                                                                    \at(
+                                                                    (map_1.items +
+                                                                    __framac_tmp21).key_2,Here)) >=
+                                                                    \at(0,Here))) &&
+                                                                    true) &&
+                                                                    (((\offset_min(
+                                                                    \at(
+                                                                    (map_1.items +
+                                                                    __framac_tmp21).value_2,Here)) <=
+                                                                    \at(0,Here)) &&
+                                                                    (\offset_max(
+                                                                    \at(
+                                                                    (map_1.items +
+                                                                    __framac_tmp21).value_2,Here)) >=
+                                                                    \at(0,Here))) &&
+                                                                    true))))) else true),Here));
+         behavior default:
+           invariant (_C_223 : compare_values{_Pre1, Here}(value_0, value_0));
+         behavior default:
+           invariant (_C_222 : (\forall integer j_10;
+                                 (((0 <= j_10) &&
+                                    (j_10 < (i_0_2 :> integer))) ==>
+                                   (! ((((map_1.items + j_10).key_2.a ==
+                                          key_0.a) &&
+                                         ((map_1.items + j_10).key_2.b ==
+                                           key_0.b)) &&
+                                        ((map_1.items + j_10).existent ==
+                                          (1 :> int32)))))));
+         variant (_C_221 : ((map_1.capacity :> integer) - (i_0_2 :> integer)));
+         while (true)
+         {  
+            {  (LoopCurrent : (if (_C_229 : (i_0_2 <
+                                              (_C_228 : map_1.capacity))) then () else 
+                              (goto while_0_break_0_2)));
+               
+               {  (if (_C_260 : ((_C_259 : (_C_258 : (_C_257 : ((_C_256 : map_1.items) +
+                                                                 i_0_2)).key_2).a) ==
+                                  (_C_255 : key_0.a))) then (if (_C_254 : 
+                                                                ((_C_253 : 
+                                                                 (_C_252 : 
+                                                                 (_C_251 : 
+                                                                 ((_C_250 : map_1.items) +
+                                                                   i_0_2)).key_2).b) ==
+                                                                  (_C_249 : key_0.b))) then 
+                                                            (if (_C_248 : 
+                                                                ((_C_247 : 
+                                                                 (_C_246 : 
+                                                                 ((_C_245 : map_1.items) +
+                                                                   i_0_2)).existent) ==
+                                                                  (1 :> int32))) then 
+                                                            (if (_C_244 : 
+                                                                (value_0 !=
+                                                                  null)) then 
+                                                            {  (_C_236 : (
+                                                               (_C_235 : value_0.c) = 
+                                                               (_C_234 : 
+                                                               (_C_233 : 
+                                                               (_C_232 : 
+                                                               ((_C_231 : map_1.items) +
+                                                                 i_0_2)).value_2).c)));
+                                                               (_C_242 : (
+                                                               (_C_241 : value_0.d) = 
+                                                               (_C_240 : 
+                                                               (_C_239 : 
+                                                               (_C_238 : 
+                                                               ((_C_237 : map_1.items) +
+                                                                 i_0_2)).value_2).d)));
+                                                               
+                                                               {  (_C_243 : (__retres_1 = (1 :> int32)));
+                                                                  
+                                                                  (goto return_label_1)
+                                                               }
+                                                            } else 
+                                                            {  (_C_230 : (__retres_1 = (-1 :> int32)));
+                                                               
+                                                               (goto return_label_1)
+                                                            }) else ()) else ()) else ())
+               };
+               (_C_263 : (i_0_2 = (_C_262 : ((_C_261 : (i_0_2 + (1 :> int32))) :> int32))))
+            }
+         });
+         (while_0_break_0_2 : ())
+      };
+      (_C_264 : (__retres_1 = (0 :> int32)));
+      (return_label_1 : 
+      (return __retres_1))
+   }
+}

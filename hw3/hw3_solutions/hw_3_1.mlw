@@ -1,0 +1,428 @@
+module CMemory
+    use import int.Int
+    use import map.Map
+
+    type pointer 'a
+
+    type alloc_table 'a
+
+    type memory 'a = map (pointer 'a) 'a
+
+    function offset_min (p : pointer 'a) (a : alloc_table 'a) : int
+
+    function offset_max (p : pointer 'a) (a : alloc_table 'a) : int
+
+    predicate same_block (p1 : pointer 'a) (p2 : pointer 'a)
+
+    predicate is_alloc (p : pointer 'a) (a : alloc_table 'a) = (offset_min p a) <= (offset_max p a)
+
+    predicate valid (p : pointer 'a) (a : alloc_table 'a) = (offset_min p a) <= 0 && (offset_max p a) >= 0 
+
+    predicate valid_range (p : pointer 'a) (a : alloc_table 'a) (left : int) (right : int) =
+        left >= (offset_min p a) && right <=  (offset_max p a)
+    
+    function select (p : pointer 'a) (m : memory 'a) : 'a
+
+    function store (p : pointer 'a) (m : memory 'a) (v : 'a) : memory 'a
+
+    function shift (p : pointer 'a) (v : int) : pointer 'a
+
+    function sub_pointer (p1 : pointer 'a) (p2 : pointer 'a) : int
+
+    axiom valid_sub:
+        forall p1 p2 : pointer 'a, a : alloc_table 'a.
+            (same_block p1 p2) 
+                -> (sub_pointer p1 p2 = (offset_min p2 a) - (offset_min p1 a))
+    
+    axiom valid_select:
+        forall a : alloc_table 'a, m : memory 'a, p : pointer 'a.
+                (valid p a) -> (select p m = get m p)
+    
+    axiom valid_store:
+         forall a : alloc_table 'a, m : memory 'a, p : pointer 'a, v : 'a.
+            (valid p a) -> (store p m v = set m p v)
+
+    axiom shift_min:
+        forall p : pointer 'a, a : alloc_table 'a, v : int.
+            (offset_min (shift p v) a) = (offset_min p a) - v
+    
+    axiom shift_max:
+        forall p : pointer 'a, a : alloc_table 'a, v : int.
+            (offset_max (shift p v) a) = (offset_max p a) - v
+
+    axiom same_same:
+        forall p : pointer 'a.
+            (same_block p p) <-> true
+    
+    axiom same_eq:
+        forall p1, p2 : pointer 'a.
+            (same_block p1 p2) <-> (same_block p2 p1)
+    
+    axiom same_tr:
+        forall p1, p2, p3 : pointer 'a. 
+            (same_block p1 p2) && (same_block p2 p3) -> (same_block p1 p3)
+
+    axiom shift_same:
+        forall p1, p2 : pointer 'a, v : int.
+            (same_block (shift p1 v) p2) <-> (same_block p1 p2)
+
+    val acc (p : pointer 'a) (m : memory 'a) (a : alloc_table 'a) : 'a
+        requires {valid p a}
+        ensures {result = select p m}
+
+    val upd (p : pointer 'a) (m : memory 'a) (a : alloc_table 'a) (v : 'a) : memory 'a
+        requires {valid p a}
+        ensures {result = store p m v}
+
+    val shft (p : pointer 'a) (v : int) : pointer 'a
+        ensures {result = shift p v}
+end
+
+module HomeWork31
+    use import ref.Ref
+    use import map.Map
+    use import int.Int
+    use import CMemory
+
+    type edge = {
+        from : int;
+        tto : int;
+        e_existent : int; 
+    }
+
+    type vertex = {
+        payload : int;
+        v_existent : int;
+    }
+
+    type graph = {
+        vertices : pointer vertex;
+        vsize : int;
+        edges : pointer edge;
+        ecnt : int;
+        esize : int;
+    }
+
+    (*
+    predicate is_vertex(Graph *g, integer v) =
+  	    0 <= v < g->vsize;
+    *)
+
+    predicate is_vertex (g : pointer graph) (v : int) (g_mem : memory graph) =
+        0 <= v < ((select g g_mem).vsize)
+
+    (*predicate edge_valid(Graph *g, integer k) =
+ 	    g->edges[k].existent ==>(shift (select g g_mem).edges k)
+	    is_vertex(g, g->edges[k].from) &&
+	    is_vertex(g, g->edges[k].to) &&
+	    g->vertices[g->edges[k].from].existent &&
+	    g->vertices[g->edges[k].to].existent;*)
+
+    predicate edge_valid (g : pointer graph) (k : int) (g_mem : memory graph) (v_mem : memory vertex) (e_mem : memory edge) =
+        ((select (shift (select g g_mem).edges k) e_mem).e_existent <> 0) ->
+            (is_vertex g ((select (shift (select g g_mem).edges k) e_mem).from) g_mem) &&
+            (is_vertex g ((select (shift (select g g_mem).edges k) e_mem).tto) g_mem) &&
+            ((select (shift ((select g g_mem).vertices) ((select (shift (select g g_mem).edges k) e_mem).from)) v_mem).v_existent <> 0) &&
+            ((select (shift ((select g g_mem).vertices) ((select (shift (select g g_mem).edges k) e_mem).tto)) v_mem).v_existent <> 0)
+    
+    (*predicate edges_valid(Graph *g, integer n) =
+ 	    \forall integer k; 0 <= k < n ==> edge_valid(g, k);*)
+
+    predicate edges_valid (g : pointer graph) (n : int) (g_mem : memory graph) (v_mem : memory vertex) (e_mem : memory edge) =
+        forall k : int.
+            0 <= k < n -> (edge_valid g k g_mem v_mem e_mem)
+
+    (*
+    predicate graph_valid(Graph *g) =
+ 	    g->vsize > 0 &&
+        g->esize > 0 &&
+        g->esize >= g->ecnt >= 0 &&
+        \valid(g->vertices + (0 .. g->vsize - 1)) &&
+	    \valid(g->edges + (0 .. g->esize - 1)) &&
+	    edges_valid(g, g->ecnt) &&
+	    (\forall integer k; g->ecnt <= k < g->esize ==> !g->edges[k].existent);
+    *)
+
+    predicate graph_valid (g : pointer graph) (g_mem : memory graph) (v_mem : memory vertex) (e_mem : memory edge) 
+        (v_alloc : alloc_table vertex) (e_alloc : alloc_table edge) =
+        ((select g g_mem).vsize > 0) &&
+        ((select g g_mem).esize > 0) &&
+        (0 <= (select g g_mem).ecnt <= (select g g_mem).esize ) &&
+        (forall k : int. 0 <= k < ((select g g_mem).vsize) -> (valid (shift (select g g_mem).vertices k) v_alloc)) &&
+        (forall k : int. 0 <= k < ((select g g_mem).esize) -> (valid (shift (select g g_mem).edges k) e_alloc)) &&
+        (edges_valid g ((select g g_mem).ecnt) g_mem v_mem e_mem) &&
+        (forall k : int. ((select g g_mem).ecnt) <= k < ((select g g_mem).esize) -> ((select (shift (select g g_mem).edges k) e_mem).e_existent = 0))
+
+    
+(* predicate full(Graph *g) = range_existent(g, 0, g->esize);
+    predicate range_existent(Graph *g, integer m, integer n) = \forall integer k; m <= k < n ==> g->edges[k].existent; *)
+
+    predicate range_existent (g : pointer graph) (g_mem : memory graph) (e_mem : memory edge) (m : int) (n : int) =
+        (forall k : int. m <= k < n -> ((select (shift (select g g_mem).edges k) e_mem).e_existent <> 0))
+
+    predicate full (g : pointer graph) (g_mem : memory graph) (e_mem : memory edge) =
+        (range_existent g g_mem e_mem 0 (select g g_mem).esize) 
+
+    (*
+    axiomatic EdgesCount {
+    logic integer count{L}(Graph *g, integer f, integer t, integer m, integer n);
+
+    axiom count_zero: \forall Graph *g, integer f, t, m, n; m >= n ==>
+        count(g, f, t, m, n) == 0;
+
+	predicate count_one_p{L}(Graph *g, integer f, integer t, integer m) =
+        count(g, f, t, m, m + 1) == (g->edges[m].existent && g->edges[m].from == f && g->edges[m].to == t ? 1 : 0);
+
+    axiom count_one{L}: \forall Graph *g, integer f, t, m; count_one_p(g, f, t, m);
+
+    predicate count_split_p{L}(Graph *g, integer f, integer t, integer m, integer n, integer k) =
+        count(g, f, t, m, k) == count(g, f, t, m, n) + count(g, f, t, n, k);
+
+    axiom count_split{L}: \forall Graph *g, integer f, t, m, n, k; m <= n <= k ==>
+        count_split_p(g, f, t, m, n, k);
+    *)
+
+    function count (g : pointer graph) (f : int) (t : int) (m : int) (n : int) (g_mem : memory graph) (e_mem : memory edge) : int
+
+    axiom count_zero:
+        forall g : pointer graph, f t m n : int, g_mem : memory graph, e_mem : memory edge.
+            m >= n -> ((count g f t m n g_mem e_mem) = 0)
+    
+    predicate count_one_p (g : pointer graph) (f : int) (t : int) (m : int) (g_mem : memory graph) (e_mem : memory edge) =
+        (count g f t m (m + 1) g_mem e_mem) = (if 0 <> (select (shift (select g g_mem).edges m) e_mem).e_existent &&
+                (select (shift (select g g_mem).edges m) e_mem).from = f &&
+                (select (shift (select g g_mem).edges m) e_mem).tto = t then 1 else 0)
+
+    (* axiom count_one{L}: \forall Graph *g, integer f, t, m; count_one_p(g, f, t, m); *)
+
+    axiom counter_one: 
+        forall g : pointer graph, f : int, t : int, m : int, g_mem : memory graph, e_mem : memory edge.
+            (count_one_p g f t m g_mem e_mem)
+    
+    
+    predicate count_split_p (g : pointer graph) (f : int) (t : int) (m : int) (n : int) (k : int) 
+        (g_mem : memory graph) (e_mem : memory edge) =
+        (count g f t m k g_mem e_mem) = (count g f t m n g_mem e_mem) + (count g f t n k g_mem e_mem)
+
+    axiom count_split:
+        forall g : pointer graph, f t m n k : int, g_mem : memory graph, e_mem : memory edge.
+        m <= n <= k -> (count_split_p g f t m n k g_mem e_mem)
+
+    (*    
+    logic integer all_count(Graph *g, integer f, integer t) = count(g, f, t, 0, g->esize); 
+    *)
+
+    function all_count (g : pointer graph) (f : int) (t : int) (g_mem : memory graph) 
+    (e_mem : memory edge) : int = 
+        count g f t 0 (select g g_mem).esize g_mem e_mem
+
+    (* My lemmas *)
+
+    lemma count_one2: forall g : pointer graph, f t m : int, g_mem : memory graph, e_mem : memory edge.
+        count_one_p g f t m g_mem e_mem && (count g f t m (m + 1) g_mem e_mem) = (if 0 <> (select (shift (select g g_mem).edges m) e_mem).e_existent &&
+                (select (shift (select g g_mem).edges m) e_mem).from = f &&
+                (select (shift (select g g_mem).edges m) e_mem).tto = t then 1 else 0)
+    
+    lemma empty_ecnt3: forall g : pointer graph, f t m : int, g_mem : memory graph, v_mem : memory vertex, e_mem : memory edge,
+        v_alloc : alloc_table vertex, e_alloc : alloc_table edge.
+        graph_valid g g_mem v_mem e_mem v_alloc e_alloc -> 
+            ((select g g_mem).ecnt <= m - 1 < (select g g_mem).esize) -> (count g f t (m - 1) m g_mem e_mem) = 0
+    
+    let rec lemma empty_ecnt (g : pointer graph) (f : int) (t : int) (m : int) 
+        (g_mem : memory graph) (v_mem : memory vertex) (e_mem : memory edge)
+        (g_alloc : alloc_table graph) (v_alloc : alloc_table vertex) (e_alloc : alloc_table edge)
+        variant {m - (select g g_mem).ecnt}
+        requires { (valid g g_alloc) && (graph_valid g g_mem v_mem e_mem v_alloc e_alloc) }
+        requires { (select g g_mem).ecnt <= m <= (select g g_mem).esize }
+        ensures { (count g f t (select g g_mem).ecnt m g_mem e_mem) = 0 }
+    = if m > (select g g_mem).ecnt then (
+        assert {(count g f t (m - 1) m g_mem e_mem) = 0};
+        assert {(count g f t (select g g_mem).ecnt m g_mem e_mem) = 
+                    (count g f t (select g g_mem).ecnt (m - 1) g_mem e_mem) + (count g f t (m - 1) m g_mem e_mem)};
+        empty_ecnt g f t (m - 1) g_mem v_mem e_mem g_alloc v_alloc e_alloc
+        ) else ()
+
+    lemma all_count2: forall g : pointer graph, f t m : int, g_mem : memory graph, v_mem : memory vertex, e_mem : memory edge,
+        v_alloc : alloc_table vertex, e_alloc : alloc_table edge.
+            (0 <= (select g g_mem).ecnt <= (select g g_mem).esize) -> 
+            (all_count g f t g_mem e_mem = (count g f t 0 (select g g_mem).esize g_mem e_mem)) &&
+            (count g f t 0 (select g g_mem).esize g_mem e_mem) = (count g f t 0 (select g g_mem).ecnt g_mem e_mem) + (count g f t (select g g_mem).ecnt (select g g_mem).esize g_mem e_mem) &&
+            all_count g f t g_mem e_mem = (count g f t 0 (select g g_mem).ecnt g_mem e_mem) + (count g f t (select g g_mem).ecnt (select g g_mem).esize g_mem e_mem)
+
+    lemma all_count3: forall g : pointer graph, g_mem : memory graph, v_mem : memory vertex, e_mem : memory edge, f : int, t : int, m : int.
+         0 <= m - 1 <= (select g g_mem).ecnt -> 
+                (count g f t 0 m g_mem e_mem) = (count g f t 0 (m - 1) g_mem e_mem) + (count g f t (m - 1) m g_mem e_mem)
+
+
+    let count (g : pointer graph) (f : int) (t : int) (g_mem : memory graph) (g_alloc : alloc_table graph)
+        (e_mem : memory edge) (e_alloc : alloc_table edge) 
+        (v_mem : memory vertex) (v_alloc : alloc_table vertex) : int 
+        requires {(valid g g_alloc) && (graph_valid g g_mem v_mem e_mem v_alloc e_alloc)}
+        requires {is_vertex g f g_mem}
+        requires {is_vertex g t g_mem}
+        requires {(select (shift (select g g_mem).vertices f) v_mem).v_existent <> 0}
+        requires {(select (shift (select g g_mem).vertices t) v_mem).v_existent <> 0}
+        ensures {result = all_count g f t g_mem e_mem}
+        =
+        let c = ref 0 in
+        let i = ref 0 in
+        while !i < (acc g g_mem g_alloc).ecnt do
+            variant { (select g g_mem).ecnt - !i }
+            invariant { 0 <= !i }
+            invariant { !i <= (select g g_mem).ecnt }
+            invariant{ !c = (count g f t 0 !i g_mem e_mem) }
+
+            if (acc (shft (acc g g_mem g_alloc).edges !i) e_mem e_alloc).e_existent <> 0 && 
+            (acc (shft (acc g g_mem g_alloc).edges !i) e_mem e_alloc).from = f &&
+            (acc (shft (acc g g_mem g_alloc).edges !i) e_mem e_alloc).tto = t then 
+            (
+                c := !c + 1;
+                assert{(count g f t !i (!i + 1) g_mem e_mem) = 1}
+            )
+            else 
+            (
+                assert{(count g f t !i (!i + 1) g_mem e_mem) = 0}
+            );
+            i := !i + 1; 
+        done;
+        assert{ !c = count g f t 0 (select g g_mem).ecnt g_mem e_mem };
+        !c
+    
+    let add_edge (g : pointer graph) (f : int) (t : int) (g_mem : memory graph) (g_alloc : alloc_table graph)
+        (e_mem : memory edge) (e_alloc : alloc_table edge) 
+        (v_mem : memory vertex) (v_alloc : alloc_table vertex) (*: (r_e_mem : memory edge, r_g_mem : memory graph) *)
+        requires {(valid g g_alloc) && (graph_valid g g_mem v_mem e_mem v_alloc e_alloc)}
+        requires {is_vertex g f g_mem}
+        requires {is_vertex g t g_mem}
+        requires {(select (shift (select g g_mem).vertices f) v_mem).v_existent <> 0}
+        requires {(select (shift (select g g_mem).vertices t) v_mem).v_existent <> 0}
+        requires {not full g g_mem e_mem}
+        ensures {let (r_e_mem, r_g_mem) = result in graph_valid g r_g_mem v_mem r_e_mem v_alloc e_alloc}
+        ensures {let (r_e_mem, r_g_mem) = result in all_count g f t r_g_mem r_e_mem = (all_count g f t g_mem e_mem + 1)}
+        ensures {let (r_e_mem, r_g_mem) = result in forall f2 : int, t2 : int. (f2 <> f || t2 <> t) -> (all_count g f2 t2 r_g_mem r_e_mem) = (all_count g f2 t2 g_mem e_mem)}
+        =
+        let changed_e_mem = ref e_mem in
+        let changed_g_mem = ref g_mem in
+        if (acc g g_mem g_alloc).ecnt < (acc g g_mem g_alloc).esize then (
+            changed_e_mem := upd (shft (acc g !changed_g_mem g_alloc).edges (acc g !changed_g_mem g_alloc).ecnt) 
+                !changed_e_mem e_alloc {from = f; tto = t; e_existent = 1};
+            changed_g_mem := upd g !changed_g_mem g_alloc 
+                {   vertices = (acc g !changed_g_mem g_alloc).vertices; 
+                    vsize = (acc g !changed_g_mem g_alloc).vsize; 
+                    edges = (acc g !changed_g_mem g_alloc).edges;
+                    ecnt = (acc g !changed_g_mem g_alloc).ecnt + 1;
+                    esize = (acc g !changed_g_mem g_alloc).esize
+                };
+
+            let k2 = ref 0 in
+            while !k2 < (acc g !changed_g_mem g_alloc).esize do
+                (* loop counter variant *)
+                variant {(select g !changed_g_mem).esize - !k2}
+                (* for loop counter *)
+                invariant {!k2 >= 0}
+                invariant {!k2 <= (select g !changed_g_mem).esize}
+                (* for all other edges count stays the same *)
+                invariant { forall j : int. 0 <= j <= !k2 /\ j <= (select g !changed_g_mem).esize 
+                    -> forall f2 : int, t2 : int. f2 <> f \/ t2 <> t 
+                        -> (count g f2 t2 0 j !changed_g_mem !changed_e_mem) = (count g f2 t2 0 j g_mem e_mem)}
+
+                k2 := !k2 + 1;
+            done;
+
+            let k = ref 0 in
+            while !k < (acc g !changed_g_mem g_alloc).esize do
+                (* loop counter variant *)
+                variant {(select g !changed_g_mem).esize - !k}
+                (* for loop counter *)
+                invariant {!k >= 0}
+                invariant {!k <= (select g !changed_g_mem).esize}
+                (* memory stays the same, except for ecnt-1 *)
+                invariant { forall j : int. 0 <= j <= !k /\ j < (select g !changed_g_mem).esize -> 
+                    j <> ((select g !changed_g_mem).ecnt - 1) -> 
+                    (select (shift (select g !changed_g_mem).edges j) !changed_e_mem) = (select (shift (select g g_mem).edges j) e_mem)}
+                invariant { forall j : int. 0 <= j < !k && j <> ((select g !changed_g_mem).ecnt - 1) 
+                    -> (count g f t j (j + 1) !changed_g_mem !changed_e_mem) = (count g f t j (j + 1) g_mem e_mem) }
+                invariant { (count g f t 0 !k !changed_g_mem !changed_e_mem) = 
+                    (count g f t 0 !k g_mem e_mem) + (if !k < ((select g !changed_g_mem).ecnt - 1) + 1 then 0 else 1)}
+                
+                k := !k + 1;
+            done;
+
+            let k3 = ref 0 in
+            while !k3 < (acc g !changed_g_mem g_alloc).esize do
+                (* loop counter variant *)
+                variant {(select g !changed_g_mem).esize - !k3}
+                (* for loop counter *)
+                invariant {!k3 >= 0}
+                invariant {!k3 <= (select g !changed_g_mem).esize}
+                (* for all other edges count stays the same *)
+                invariant { forall j : int. 0 <= j <= !k3 /\ j < (select g !changed_g_mem).esize 
+                    -> edge_valid g j !changed_g_mem v_mem !changed_e_mem }
+
+                k3 := !k3 + 1;
+            done;
+            assert {count g f t ((select g !changed_g_mem).ecnt - 1) (select g !changed_g_mem).ecnt !changed_g_mem !changed_e_mem = 1};
+        ) else (
+            let brk = ref 0 in
+            let i = ref 0 in
+            assert{ exists k : int. 0 <= k <= (select g !changed_g_mem).ecnt - 1 && 0 = (select (shift (select g !changed_g_mem).edges k) !changed_e_mem).e_existent };
+            while !i < (acc g !changed_g_mem g_alloc).ecnt do
+                variant {(select g !changed_g_mem).ecnt - !i}
+                invariant {!i >= 0}
+                invariant {!i <= (select g !changed_g_mem).ecnt}
+                
+                invariant { !brk = 1 || (!brk = 0 && exists k : int. !i <= k <= (select g !changed_g_mem).ecnt - 1 && 0 = (select (shift (select g !changed_g_mem).edges k) !changed_e_mem).e_existent ) }
+                invariant { graph_valid g !changed_g_mem v_mem !changed_e_mem v_alloc e_alloc }
+                invariant { (all_count g f t !changed_g_mem !changed_e_mem) = (all_count g f t g_mem e_mem) + !brk }
+                invariant { forall f2:int, t2:int. f2 <> f \/ t2 <> t -> (all_count g f2 t2 !changed_g_mem !changed_e_mem) = (all_count g f2 t2 g_mem e_mem) }    
+
+                'Pre:
+                if !brk = 0 && (acc (shft (acc g !changed_g_mem g_alloc).edges !i) !changed_e_mem e_alloc).e_existent = 0 then (
+                    changed_e_mem := upd (shft (acc g !changed_g_mem g_alloc).edges !i) 
+                        !changed_e_mem e_alloc {from = f; tto = t; e_existent = 1};
+                    brk := 1;
+                    let k1 = ref 0 in
+                    while !k1 < (acc g !changed_g_mem g_alloc).esize do
+                        variant {(select g !changed_g_mem).esize - !k1}
+                        (* for loop counter *)
+                        invariant {!k1 >= 0}
+                        invariant {!k1 <= (select g !changed_g_mem).esize}
+
+                        invariant { forall j : int. 
+                            0 <= j <= !k1 /\ j < (select g !changed_g_mem).esize -> j <> !i 
+                                -> (select (shift (select g !changed_g_mem).edges j) !changed_e_mem) = 
+                                    (select (shift (select g !changed_g_mem).edges j) (at !changed_e_mem 'Pre)) }
+                        invariant { forall j : int. 0 <= j <= !k1 /\ j <= (select g !changed_g_mem).esize 
+                            -> forall f2 : int, t2 : int. f2 <> f \/ t2 <> t 
+                                -> (count g f2 t2 0 j !changed_g_mem !changed_e_mem) = 
+                                    (count g f2 t2 0 j !changed_g_mem (at !changed_e_mem 'Pre)) }
+                        invariant { forall j : int.
+                            0 <= j <= !k1 /\ j < (select g !changed_g_mem).esize -> j <> !i ->
+                              edge_valid g j !changed_g_mem v_mem !changed_e_mem}
+                        k1 := !k1 + 1;
+                    done;
+                    let k3 = ref 0 in
+                    while !k3 < (acc g !changed_g_mem g_alloc).esize do
+                        variant {(select g !changed_g_mem).esize - !k3}
+                        (* for loop counter *)
+                        invariant {!k3 >= 0}
+                        invariant {!k3 <= (select g !changed_g_mem).esize}
+
+                        invariant { (count g f t 0 !k3 !changed_g_mem !changed_e_mem) = 
+                            (count g f t 0 !k3 !changed_g_mem (at !changed_e_mem 'Pre)) + (if !k3 < !i + 1 then 0 else 1)}
+
+                        k3 := !k3 + 1;
+                    done;
+                    assert { edge_valid g !i !changed_g_mem v_mem !changed_e_mem};
+                    assert { forall k : int. 0 <= k < (select g !changed_g_mem).esize ->
+                        edge_valid g k !changed_g_mem v_mem !changed_e_mem };
+                    assert {(all_count g f t !changed_g_mem !changed_e_mem) = (all_count g f t (at !changed_g_mem 'Pre) (at !changed_e_mem 'Pre)) + 1};
+                );
+                i := !i + 1;
+            done; 
+            assert{ !brk = 1 }
+        );
+
+        (!changed_e_mem, !changed_g_mem)
+
+end
